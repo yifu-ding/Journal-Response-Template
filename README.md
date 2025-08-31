@@ -39,7 +39,7 @@
 \author{}
 ```
 
-### �� 预设命令
+### ⚙️ 预设命令
 
 1. 主编、副主编（如有）、审稿人
 
@@ -112,7 +112,7 @@ Response to the second reviewer
 		\end{lstlisting}
 ```
 
-### �� 关键自定义部分
+### ⚠️ 关键自定义部分
 
 Cover Letter 在目录中显示为 Cover Letter 或 Preface（根据期刊要求），在`cover_letter.tex#L4` 中定义
 
