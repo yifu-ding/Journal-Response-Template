@@ -1,51 +1,142 @@
-English| [Chinese](https://github.com/NeuroDong/Latex_for_review_comments/blob/main/chinese_doc.md)
 
-# Latex Template for Review Comments of Papers
-A modification on [Journal-Response-Letter-Template-Latex](https://github.com/shellywhen/Journal-Response-Letter-Template-Latex). The modified contents include but are not limited to the following:
 
-**January 12, 2025**:
+# Journal Response Template Instructions
 
-- Add color to the font of the response content block to more clearly distinguish between reviewer comments and author responses.
+期刊回复 latex 模板简明引导。
 
-- Add a Summary Comment for each reviewer, and the Summary Comment is not numbered.
+---
 
-- All comments belonging each reviewer share one Reference.
+### ✍️基本信息修改
 
-**March 29, 2025**:
+1. Journal info
 
-- Solved the bug that "REFERENCE" would appear in the header, see details: [https://github.com/NeuroDong/Latex_for_review_comments/issues/1](https://github.com/NeuroDong/Latex_for_review_comments/issues/1)
+封面
 
-- Allows users to add and close author information for single-blind and double-blind review respectively.
+```latex
+\usepackage[journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+			manuscript={TPAMI-yyyy-mm-idid},
+			editor={Mrs. Joyce Arnold}]{reviewresponse}
+```
 
-**April 16, 2025**:
+- Fast info
+  
+    TPAMI 全称: IEEE Transactions on Pattern Analysis and Machine Intelligence
+    
+    TNNLS 全称: IEEE Transactions on Neural Networks and Learning Systems
+    
 
-- Solved the bug that the font color of the Change box is inconsistent when it crosses pages, see details: [https://github.com/NeuroDong/Latex_for_review_comments/issues/3](https://github.com/NeuroDong/Latex_for_review_comments/issues/3)
+脚注
 
-- An example of inserting a picture in the Change box is provided, see: [https://github.com/NeuroDong/Latex_for_review_comments/issues/2](https://github.com/NeuroDong/Latex_for_review_comments/issues/2)
+```latex
+% 在 review_response.tex#L107
+\fancyfoot[L]{Response Letter for TPAMI-yyyy-mm-idid} 
+```
 
-**May 17, 2025**:
-- Add pseudocode in the Change box, see: [https://github.com/NeuroDong/Latex_for_review_comments/issues/6](https://github.com/NeuroDong/Latex_for_review_comments/issues/6)
+1. Paper title; Author
 
-**July 3, 2025**:
-- Added table to template, see: [https://github.com/NeuroDong/Latex_for_review_comments/issues/8](https://github.com/NeuroDong/Latex_for_review_comments/issues/8)
+```latex
+\title{}
+\author{}
+```
 
-**July 20, 2025**:
-- Added table in change, see: [https://github.com/NeuroDong/Latex_for_review_comments/issues/9](https://github.com/NeuroDong/Latex_for_review_comments/issues/9)
+### �� 预设命令
 
-**August 11,2025**:
-- Skip the number of reviewers, see: [https://github.com/NeuroDong/Latex_for_review_comments/issues/10](https://github.com/NeuroDong/Latex_for_review_comments/issues/10)
+1. 主编、副主编（如有）、审稿人
 
-# Template Display
-Please click [here](https://github.com/NeuroDong/Latex_for_review_comments/blob/main/review_response.pdf)
+```latex
+\begin{document}
+...
+\editor
+Response to the editor
 
-# How to Use
-Note that this source code needs to be compiled multiple times according to the steps below, where Biber compile is for compiling references.
+\AssociateEditor % 如有副主编
+Response to the associate editor
 
-Step1: Compile
+\reviewer
+Response to the first reviewer
 
-Step2: Biber compile
+\reviewer
+Response to the second reviewer
+```
 
-Step3: Compile
+1. General Comment （不带编号）
 
-# Continuous Update
-This repository will be updated continuously for a long time. Welcome to use this repository, raise issues, and push requests to help optimize this template to help better community members' papers get accepted.
+复述一下主编、副主编或审稿人的 general comment
+
+```latex
+\begin{generalcomment}
+复述一下主编、副主编或审稿人的 general comment
+\end{generalcomment}
+```
+
+我们对于 general comment 的回复
+
+```latex
+\begin{revmeta}[Optional Parameter]
+写我们对于 general comment 的回复
+\end{revmeta}
+```
+
+1. 副主编的单条 comment （带编号）
+
+```latex
+\begin{revcommentToAssociateAuthor}
+复述一下副主编的单条 comment
+\end{revcommentToAssociateAuthor}
+```
+
+用`\begin{revmeta}[]` 回复
+
+1. 审稿人的意见（带编号）
+
+```latex
+\begin{revcomment}
+复述审稿人的一条意见
+\end{revcomment}
+```
+
+```latex
+\begin{revresponse}[Optional Parameter]
+写我们的回复，在回复里可以插入 \begin{changes}
+												  \end{changes}
+\end{revresponse}
+```
+
+1. 插入伪代码
+
+```latex
+\begin{lstlisting}[language=Python, caption={Algorithm},frame=single]
+			for i in range(1, N+1):
+			# Run
+			perform_operation(i)
+		\end{lstlisting}
+```
+
+### �� 关键自定义部分
+
+Cover Letter 在目录中显示为 Cover Letter 或 Preface（根据期刊要求），在`cover_letter.tex#L4` 中定义
+
+```latex
+\addcontentsline{toc}{section}{\protect\numberline{}Cover Letter}  % 显示为 Cover Letter
+```
+
+`cover_letter.tex` 中说修改部分为红字标出，新加部分为蓝字标出。根据自己的 paper 修改这句。
+
+```latex
+\textbf{In the revised manuscript, modified parts are marked in red, and newly added parts are marked in blue.}
+```
+
+配色自定义（在`reviewresponse.sty#L26-43`）
+
+```latex
+% comment box color
+\definecolor{colorcommentbg}{HTML}{ededed}  % comment background
+\definecolor{colorcommentframe}{HTML}{8faadc}  % comment title background 
+
+% response text color
+\definecolor{maintext}{HTML}{404D92}
+
+%%%% change box color
+\definecolor{colorchangebg}{HTML}{f9daa6} % change box sidebar
+\definecolor{colorchangetext}{HTML}{000000}  % change text
+```
