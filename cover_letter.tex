@@ -5,7 +5,24 @@
 
 \noindent \textbf{Dear Editors, Associate Editor and Reviewers:}
 
-Thank you for your valuable and insightful feedback on our manuscript, "XXX." We greatly appreciate your time spent reviewing our manuscript and making constructive suggestions, which have greatly improved the quality of our manuscript. In light of the reviewers' comments and recommendations, we have meticulously revised the manuscript and provided a detailed point-by-point response. Furthermore, we have meticulously reviewed and corrected the manuscript to ensure no errors. We hope that our revisions and responses will meet with your satisfaction.
+Thank you for your valuable and insightful feedback on our manuscript, ``Accurate and Efficient Binarized Transformer by Algorithm-Hardware Co-design''. We greatly appreciate your time spent reviewing our manuscript and making constructive suggestions, which have greatly improved the quality of our manuscript. In light of the reviewers' comments and recommendations, we have meticulously revised the manuscript and provided a detailed point-by-point response. Furthermore, we have meticulously reviewed and corrected the manuscript to ensure no errors. We hope that our revisions and responses will meet with your satisfaction.
+
+
+\paragraph{What We Added in the Revision}
+
+\begin{itemize}
+    \item \textbf{Broader baselines}: Integrated the works listed above into the Related Work and, where possible, the experimental comparisons.
+    
+    \item \textbf{Extend to LLMs}: Implemented our method on representative LLMs, covering both training algorithm and custom CUDA kernels, and evaluated on WikiText-2, C4, CommensenseQA benchmarks under standard LLM protocols.
+
+    \item \textbf{Training dynamics}: Report LLM training loss curves to demonstrate the transferability and stability of our method beyond the BERT setting.
+
+    \item \textbf{Reported end-to-end latency, operator-level throughput, and GPU memory footprint} in both prefill and decode phases with various batch sizes and sequence lengths to make the system-level gains explicit. 
+    % End-to-end speedup and operator-level throughput: Provide end-to-end timing comparisons on both prefill/decode phases, and operator-level timing against linear acceleration implementations to make the system-level gains explicit.
+
+    \item Revised narrative: Concise, shortening and focused presentation. 
+\end{itemize}
+
 
 We want to take this opportunity to thank you for handling our manuscript, and we look forward to hearing from you.
 

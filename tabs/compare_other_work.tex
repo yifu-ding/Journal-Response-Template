@@ -1,0 +1,32 @@
+\begin{table}[ht]
+\centering
+\small
+% \setlength{\tabcolsep}{6pt}
+% \renewcommand{\arraystretch}{1.2}
+\vspace{-0.1in}
+\caption{Comparison of weight/activation bitwidths and target models.}
+\vspace{-0.1in}
+\resizebox{0.6\textwidth}{!}{
+\begin{tabular}{l l l}
+\toprule
+\textbf{Paper} & \textbf{W$_{bit}$ \& A$_{bit}$} & \textbf{Target Models} \\
+\midrule
+{[1]} & \begin{tabular}[c]{@{}l@{}}1/2/3/4-bit mixed-precision\end{tabular}
+      \& FP32
+      & Transformer \\ 
+{[4]} & 2-bit: $\{-1,\,0,\,+1\}$
+      \& BF16
+      & LLM \\ 
+% {[3]} & \begin{tabular}[c]{@{}l@{}}1-bit: $\{-1,\,+1\}$ \\ 2-bit: $\{-1,\,0,\,1\}$\end{tabular}
+       % \begin{tabular}[c]{@{}l@{}}1-bit: $\{-1,\,+1\}$\\ 2-bit: $\{-1,\,0,\,1\}$\end{tabular}
+{[3]} & \begin{tabular}[c]{@{}l@{}} 1-bit:  \{-1,\,+1\} \& \{-1,\,+1\}  \\  2-bit: \{-1,\,0,\,1\} \& \{-1,\,0,\,1\}  \end{tabular}
+      & \begin{tabular}[c]{@{}l@{}}BART \end{tabular} \\ 
+{[2]} & 1-bit: $\{-1,\,+1\}$ \& $\{-1,\,+1\}$
+      & ViT \\  
+\cellcolor[HTML]{F9D7EF}{{Ours}} & \cellcolor[HTML]{F9D7EF}{{1-bit: $\{-1,\,+1\}$ \& 2-bit: $\{-1,\,0,\,+1\}$}} 
+              & \cellcolor[HTML]{F9D7EF}{{BERT, LLM}} \\
+\bottomrule
+\end{tabular}}
+\vspace{-0.2in}
+\label{tab:method_comparison}
+\end{table}

@@ -1,0 +1,54 @@
+\begin{table}[h]
+\centering
+\resizebox{0.75\textwidth}{!}{
+\begin{threeparttable}
+\caption{Kernel microbenchmarks. All test cases are repeated 50 times with 128$\times$128 multiplying with 128$\times$1 on NVIDIA H800 GPU (96GB VRAM). }
+\begin{tabular}{l c r r}
+\toprule
+\textbf{Kernel} & \textbf{W$_{bit}$/A$_{bit}$} & \textbf{Time ($\mu$s)} & \textbf{FLOPs ($\times 10^3$)} \\
+\midrule
+\texttt{torch.nn.functional }   & 16/16   & 10.08 & 3.251 \\
+\texttt{bnb.nn.Linear4bit}             & 4/16    & 60.59 & 0.541 \\
+\texttt{bitlinear\_int8xint2} (Bitnet) & 2/8     & 8.06*  & 4.068 \\ \midrule
+\cellcolor[HTML]{FFFFFF}{(1) Binary Linear (Supported)}       & \cellcolor[HTML]{FFFFFF}{1/1}     & \cellcolor[HTML]{FFFFFF}{5.38}  & \cellcolor[HTML]{FFFFFF}{6.091} \\
+\cellcolor[HTML]{FFFFFF}{(2) Binary A x V (Supported)}         & \cellcolor[HTML]{FFFFFF}{1/1}     & \cellcolor[HTML]{FFFFFF}{5.24}  & \cellcolor[HTML]{FFFFFF}{6.253} \\
+\cellcolor[HTML]{FFFFFF}{(3) BWTA (Ours) }   & \cellcolor[HTML]{FFFFFF}{1/1.5}   & \cellcolor[HTML]{FFFFFF}{5.91}  & \cellcolor[HTML]{FFFFFF}{5.545} \\
+\cellcolor[HTML]{FFFFFF}{(4) BWTA$_{Attn}$ (Ours)}         & \cellcolor[HTML]{FFFFFF}{1/1.5}   & \cellcolor[HTML]{FFFFFF}{5.45}  & \cellcolor[HTML]{FFFFFF}{6.012} \\
+\cellcolor[HTML]{FFFFFF}{(5) BWTA$_{QK}$ (Ours)}          & \cellcolor[HTML]{FFFFFF}{1.5/1.5} & \cellcolor[HTML]{FFFFFF}{5.27}  & \cellcolor[HTML]{FFFFFF}{6.218} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+    \item Note: * means the result of Bitnet is an estimated value based on its speedup ratio. 
+\end{tablenotes}
+\label{tab:kernel_bench}
+\end{threeparttable}
+}
+\end{table}
+
+
+\begin{table}[h]
+\centering
+\resizebox{0.75\textwidth}{!}{
+\begin{threeparttable}
+\caption{Kernel microbenchmarks. All test cases are repeated 50 times with 256$\times$256 multiplying with 256$\times$1 on NVIDIA H800 GPU (96GB VRAM). }
+\begin{tabular}{l c r r}
+\toprule
+\textbf{Kernel} & \textbf{W$_{bit}$/A$_{bit}$} & \textbf{Time ($\mu$s)} & \textbf{FLOPs ($\times 10^3$)} \\
+\midrule
+\texttt{torch.nn.functional }           & 16/16   & 10.74  & 3.05 \\
+\texttt{bnb.nn.Linear4bit}              & 4/16    & 60.33 & 0.543 \\
+\texttt{bitlinear\_int8xint2}(Bitnet)  & 2/8     & 8.58* & 4.050 \\  \midrule
+\cellcolor[HTML]{FFFFFF}{(1) Binary Linear   (Supported)}         & \cellcolor[HTML]{FFFFFF}{1/1}     & \cellcolor[HTML]{FFFFFF}{7.29}  & \cellcolor[HTML]{FFFFFF}{4.495} \\
+\cellcolor[HTML]{FFFFFF}{(2) Binary A x V   (Supported)}          & \cellcolor[HTML]{FFFFFF}{1/1}     & \cellcolor[HTML]{FFFFFF}{6.97}  & \cellcolor[HTML]{FFFFFF}{4.701} \\
+\cellcolor[HTML]{FFFFFF}{(3) BWTA (Ours)}                & \cellcolor[HTML]{FFFFFF}{1/1.5}   & \cellcolor[HTML]{FFFFFF}{8.56}  & \cellcolor[HTML]{FFFFFF}{3.828} \\
+\cellcolor[HTML]{FFFFFF}{(4) BWTA$_{Attn}$ (Ours)}       & \cellcolor[HTML]{FFFFFF}{1/1.5}   & \cellcolor[HTML]{FFFFFF}{6.71}  & \cellcolor[HTML]{FFFFFF}{4.883} \\
+\cellcolor[HTML]{FFFFFF}{(5) BWTA$_{QK}$ (Ours)}         & \cellcolor[HTML]{FFFFFF}{1.5/1.5} & \cellcolor[HTML]{FFFFFF}{5.54}  & \cellcolor[HTML]{FFFFFF}{5.915} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+    \item Note: * means the result of Bitnet is an estimated value based on its speedup ratio. 
+\end{tablenotes}
+\label{tab:kernel_bench_256}
+\end{threeparttable}
+}
+\end{table}

@@ -1,0 +1,116 @@
+% Requires: \usepackage{booktabs,multirow}
+\begin{table}[htbp]
+\centering
+\resizebox{0.6\textwidth}{!}{
+\begin{threeparttable}
+\caption{Perplexity on WikiText2 and C4 for various models and quantization methods.}
+\label{tab:accuracy-llm-ppl}
+\begin{tabular}{l l c r r}
+\toprule
+\textbf{Model} & \textbf{Method} & \textbf{Avg. W$_{bit}$/A$_{bit}$} & \textbf{Wikitext2} & \textbf{C4} \\
+\midrule
+\multirow{11}{*}{LLaMA-2-7B}
+  & Full Precision & 16/16     & 5.47      & --      \\
+  & RTN            & 2/16      & 431.97    & --      \\
+  & RTN            & 3/16      & 539.48    & --      \\
+  & AWQ            & 2/16      & 2.1e5    & --      \\
+  & AWQ            & 3/16      & 24.00        & --      \\
+  & GPTQ           & 2/16      & 20.85     & --      \\
+  & OmniQuant      & 2/16      & 9.64      & --      \\
+  & DB-LLM         & 2/16      & 7.23      & --      \\
+  & PB-LLM$^1$         & 2/16      & 20.37     & --      \\
+  & PB-LLM$^2$         & 1.7/16    & 69.20     & --      \\
+  & BiLLM          & 1.1/16   & 32.48     & --      \\
+\midrule
+\multirow{4}{*}{OPT-2.7B}
+  & RTN            & 2/16      & 9505.76   & --      \\
+  & GPTQ           & 2/16      & 61.59     & --      \\
+  & PB-LLM$^2$         & 1.7/16   & 124.35    & --      \\
+  & BiLLM          & 1.1/16   & 49.55     & --      \\
+\midrule
+\multirow{5}{*}{OPT-1.3B}
+  & RTN            & 4/16      & --        & 20.25   \\
+  & RTN            & 2/16      & 11272.65  & --      \\
+  & GPTQ           & 2/16      & 115.17    & --      \\
+  & PB-LLM$^2$         & 1.7/16   & 265.52    & 17.60   \\
+  & BiLLM          & 1.1/16   & 69.97     & --      \\
+\midrule
+\multirow{2}{*}{Bitnet-b1.58-3B}
+  & Bitnet         & 1.5/8     & 9.98     & 9.78   \\
+  & BWN~\cite{liu2022bit}         & 1.4/7     &     \\
+  & \cellcolor[HTML]{F9D7EF}{{BWTA (Ours)}}     & \cellcolor[HTML]{F9D7EF}{1.4/7} & \cellcolor[HTML]{F9D7EF}{{--}}        & \cellcolor[HTML]{F9D7EF}{--}      \\
+\midrule
+\multirow{2}{*}{Bitnet-b1.58-1.3B}
+  & Bitnet         & 1.5/8     & 11.20   & 11.17 \\
+  & BWN         & 1.4/7     &   &  \\
+  & \cellcolor[HTML]{F9D7EF}{{BWTA (Ours)}}    & \cellcolor[HTML]{F9D7EF}{1.4/7} & \cellcolor[HTML]{F9D7EF}{{13.12}}   & \cellcolor[HTML]{F9D7EF}{{13.08}} \\
+\midrule
+\multirow{2}{*}{Bitnet-b1.58-0.7B}
+  & Bitnet         & 1.5/8     & 13.36    & 12.20 \\
+  & BWN         & 1.4/7     &   &  \\
+  & \cellcolor[HTML]{F9D7EF}{{BWTA (Ours)}}    & \cellcolor[HTML]{F9D7EF}{{1.4/7}} & \cellcolor[HTML]{F9D7EF}{{25.32}}  & \cellcolor[HTML]{F9D7EF}{{17.51}} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+    \item $^1$ is the official results reported by PB-LLM paper~\cite{shang2023pbllm},  and $^2$ is the reproduced results reported in BiLLM~\cite{huang2024billm}. 
+\end{tablenotes}
+\end{threeparttable}
+}
+\end{table}
+
+
+\begin{table}[htbp]
+\centering
+\caption{Accuracy on commonsense QA benchmarks for various models and quantization methods.}
+\label{tab:accuracy-llm-cmQA}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{l l c r r r r r r r r}
+\toprule
+\textbf{Model} & \textbf{Method} & \textbf{Avg. W$_{bit}$/A$_{bit}$} &
+\textbf{BoolQ} & \textbf{PIQA} & \textbf{HS} &
+\textbf{WG} & \textbf{ARC-E} & \textbf{ARC-C} &
+\textbf{OBQA} & \textbf{Avg.} \\
+\midrule
+\multirow{7}{*}{LLaMA-1-7B}
+  & Full Precision & 16/16 & 76.8 & 79.3 & 76.1 & 70.0 & 73.0 & 48.0 & 57.6 & 68.7 \\
+  & RTN           & 4/16  & 71.2 & 77.3 & 72.7 & 66.9 & 68.8 & 46.4 & 52.8 & 65.2 \\
+  & SmoothQuant   & 4/16  & 67.7 & 76.0 & 69.4 & 66.7 & 66.9 & 43.0 & 50.6 & 63.0 \\
+  & LLM-QAT       & 4/16  & 75.5 & 78.3 & 74.0 & 69.0 & 70.0 & 45.0 & 55.4 & 66.6 \\
+  & GPTQ          & 2/16  & 50.0 & 52.8 & 26.3 & 49.3 & 26.6 & 29.5 & 28.2 & 37.5 \\
+  & PB-LLM        & 1.7/16& 59.7 & 54.6 & 28.7 & 50.6 & 26.6 & 29.5 & 30.4 & 40.0 \\
+  & BiLLM         & 1.1/16  & 62.7 & 61.2 & 36.8 & 51.1 & 28.2 & 24.6 & 31.8 & 42.3 \\
+\midrule
+\multirow{3}{*}{LLaMA2-7B}
+  & GPTQ          & 2/16 & 43.9 & 51.1 & 26.3 & 50.8 & 26.6 & 28.5 & 29.0 & 36.6 \\
+  & PB-LLM        & 1.7/16  & 62.3 & 53.8 & 27.7 & 49.3 & 28.0 & 25.0 & 30.2 & 39.5 \\
+  & BiLLM         & 1.1/16  & 61.8 & 60.6 & 34.8 & 52.4 & 36.2 & 24.4 & 33.2 & 43.3 \\
+\midrule
+\multirow{2}{*}{Bitnet-b1.58-3B}
+  & Bitnet        & 1.5/8   & 58.9 & 72.3 & 42.8 & 60.8 & 65.0 & 30.0 & 26.6 & 50.9 \\
+  & BWN           & 1.4/7   \\
+  & \cellcolor[HTML]{F9D7EF}{BWTA (Ours)} & \cellcolor[HTML]{F9D7EF}{1.4/7} &
+    \cellcolor[HTML]{F9D7EF}{--} & \cellcolor[HTML]{F9D7EF}{--} &
+    \cellcolor[HTML]{F9D7EF}{--} & \cellcolor[HTML]{F9D7EF}{--} &
+    \cellcolor[HTML]{F9D7EF}{--} & \cellcolor[HTML]{F9D7EF}{--} &
+    \cellcolor[HTML]{F9D7EF}{--} & \cellcolor[HTML]{F9D7EF}{--} \\
+\midrule
+\multirow{2}{*}{Bitnet-b1.58-1.3B}
+  & Bitnet        & 1.5/8   & 62.0 & 68.9 & 37.5 & 55.6 & 59.3 & 26.2 & 20.6 & 47.2 \\
+  & BWN           & 1.4/7   \\
+  & \cellcolor[HTML]{F9D7EF}{BWTA (Ours)} & \cellcolor[HTML]{F9D7EF}{1.4/7} &
+    \cellcolor[HTML]{F9D7EF}{56.9} & \cellcolor[HTML]{F9D7EF}{68.3} &
+    \cellcolor[HTML]{F9D7EF}{36.9} & \cellcolor[HTML]{F9D7EF}{55.3} &
+    \cellcolor[HTML]{F9D7EF}{57.3} & \cellcolor[HTML]{F9D7EF}{26.5} &
+    \cellcolor[HTML]{F9D7EF}{21.6} & \cellcolor[HTML]{F9D7EF}{46.1} \\
+\midrule
+\multirow{2}{*}{Bitnet-b1.58-0.7B}
+  & Bitnet        & 1.5/8   & 54.0 & 67.9 & 35.0 & 53.9 & 55.4 & 24.7 & 20.0 & 44.4 \\
+  & BWN           & 1.4/7   \\
+  & \cellcolor[HTML]{F9D7EF}{BWTA (Ours)} & \cellcolor[HTML]{F9D7EF}{1.4/7} &
+    \cellcolor[HTML]{F9D7EF}{58.9} & \cellcolor[HTML]{F9D7EF}{65.1} &
+    \cellcolor[HTML]{F9D7EF}{33.4} & \cellcolor[HTML]{F9D7EF}{53.8} &
+    \cellcolor[HTML]{F9D7EF}{51.7} & \cellcolor[HTML]{F9D7EF}{23.6} &
+    \cellcolor[HTML]{F9D7EF}{21.6} & \cellcolor[HTML]{F9D7EF}{44.0} \\
+\bottomrule
+\end{tabular}}
+\end{table}

@@ -1,0 +1,297 @@
+% Reviewer 2
+
+\reviewer
+
+\begin{generalcomment}
+\textbf{General Comment:} This paper presents an accurate and efficient binarized transformer through algorithm-hardware co-design. On the software side, the authors propose a Binary Weight \& Ternary Activation (BWTA) framework. On the hardware side, a custom MatMul CUDA kernel is employed.
+
+\textbf{Strengths:} (i) Comprehensive analysis of the Transformer architecture; (ii) Systematic software–hardware methodology; (iii) Claims SOTA lowbit quantization performance. 
+
+\textbf{Weaknesses:} (i) Manuscript is overlong; abstract/intro lack focus and clear motivation for ``co-design.''; (ii) Software/hardware seem independently developed; GPU choice (power/configurability) weakens the co-design story; (iii) FP16 comparisons are not meaningful for low-bit methods; baselines outdated; need comparisons to other low-bit baselines on GPU or more efficient platforms; (iv) Lack optimization on non-linear functions (Softmax/LayerNorm); (v) Clarify distinctions vs prior work. 
+ 
+\end{generalcomment}
+
+\begin{revmeta}[]
+We appreciate the time and effort you have invested in evaluating our work and fully acknowledge the deficiencies you have identified in the presentation and clarity of our study, as well as the missing experiments.  Below, we outline the steps to address each of your concerns.  
+\end{revmeta}
+
+\begin{revcomment}
+The manuscript is excessively lengthy; the abstract lacks clear structure and emphasis, the Introduction overly focuses on technical details, without sufficiently justifying the necessity of co-design. 
+% The overall manuscript is excessively lengthy. The abstract lacks clear structure and emphasis, making it difficult for readers to grasp the key contributions. The Introduction section overly focuses on technical details, merely presenting an isolated historical analysis of quantization techniques without sufficiently justifying the necessity of co-design as highlighted in the title. 
+
+% 总体文章太长。摘要部分没有清晰结构和重点，让读者抓不到关键贡献。
+% introduction 部分关注太多技术细节，只分析了量化技术，却未能充分论证文中强调的协同设计的必要性。
+\end{revcomment}
+\begin{revresponse}[]
+We appreciate the reviewer's feedback and have revised the manuscript to improve focus and readability, and to foreground the co-design rationale.
+
+\paragraph{Reduce length \& Focused narrative.} In revised version, we reduce length by removing/condensing non-essential details and moving \dyfcomment{xxx part} to the Appendix.
+
+\paragraph{Rewritten abstract with clear structure. } We rewrite abstract with clear structure with ``problem, approach, results, significance'' flow. And we refocus our introduction section with explicitly stating: 
+\begin{itemize}
+    \item The \textbf{problem} of accuracy collapse in ultra low-bit quantization, and the \textbf{lack} of kernel support on ultra low-bit quantization for real acceleration. 
+    \item The \textbf{design} of Binary Weight \& Ternary Activation (BWTA) framework and Smooth Multi-Stage Quantization training; the \textbf{custom} BWTA MatMul CUDA kernel for accelerated inference in real implementation;
+    \item Major experimental \textbf{results} (accuracy and speedups). 
+    \item The \textbf{significance} of BWTA: providing insights and fundamental low-level kernels, inspiring the future ultra-low bit Transformer. 
+\end{itemize}
+
+\paragraph{Refocused Introduction.} 
+We streamlined historical background and added the motivation of for algorithm–hardware co-design, supported by: 
+\begin{itemize}
+    \item Operator-wise timing showing matmul dominates during inference (prefill/decode), whereas ultra low-bit quantization leads to accuracy loss, motivating where co-design yields impact; 
+    \item The importance of preserving zeropoint in ultra low-bit quantization for keeping the accuracy performance; 
+    \item Hardware-aware constraints (the limited instruction sets, blockwise tiling, etc.) that directly informed our high throughput BWTA kernel design; 
+    \item A brief design idea of how algorithmic choices (BWTA bitwith setting and staged quantization) and kernel choices (instruction and layout) were co-optimized for end-to-end gains. 
+\end{itemize}
+
+\paragraph{Clearly stated contributions.} We also clearly stated contributions in introduction. 
+\begin{changes}
+We summarize our main contributions of this paper as:
+\begin{itemize}
+    \item A ultra low-bit framework with Smooth Multi-Stage Quantization strategy for stable training; 
+    \item A state-of-the-art custom BWTA MatMul CUDA kernel providing 16–24$\times$ speedup vs. FP16 MatMul, and brings leading end-to-end acceleration in both prefill/decode phases; 
+    \item The accuracy of the BWTA Transformer significantly outperforms that of conventional binarization methods on both BERT and LLM-based architectures. 
+    \item BWTA is broadly compatible with transformer-based architectures with less performance loss while acceleration benefits. 
+\end{itemize}
+\end{changes}
+
+We hope these revisions address the length and structure concerns and explicitly justify why co-design is necessary for practical ultra-low-bit Transformers. 
+
+
+\end{revresponse}
+
+
+
+\begin{revcomment}
+While the title mentions ``algorithm-hardware co-design,'' the proposed framework operates independently on the algorithm and hardware sides. 
+
+% 虽然文章 title 说的是软硬协同，但是所提出的框架单独在算法和硬件侧实施。
+\end{revcomment}
+\begin{revresponse}[]
+We thank the reviewer for the helpful comments. We respectfully clarify that our framework is an algorithm-hardware co-design rather than two independent tracks.
+
+Our observation shows that in ultra low-bit quantization, zeros in activations are critical for accuracy. This led us to a zero-preserving ternary activation scheme (BWTA) with a Smooth Multi-Stage Quantization schedule for stable training. 
+However, we found that using standard GPU kernels, the above bitwidth setting did not yield practical speedups because ternary activations and binary weights were not efficiently mapped to existing GEMMs. 
+
+This obstacle forced us to build a custom BWTA MatMul CUDA kernel, turning the algorithmic form into measurable device-side gains (16-24$\times$ vs. FP16 MatMul) and end-to-end speedups in both prefill and decode phases in LLMs. The additional evaluation on the generation quality and end-to-end acceleration performances on LLMs can be found in the response to Comment~\ref{com:llm-accuracy} and Comment~\ref{com:llm-e2e-speed} of Reviewer 1. 
+
+Conversely, preserving the zero-point at the low level can also be implemented with naive integer quantization (e.g., INT2). However, this scheme is misaligned with CUDA instruction sets: it cannot directly exploit efficient bitwise operators, which in turn complicates end-to-end acceleration. By contrast, our binary-weight + ternary-activation design is tied to kernel primitives and maps directly onto low-bit, bitwise execution, majorly involving bit-packing via \texttt{shift/and/or} operators and native \texttt{mma} instructions with \texttt{xnor/popcount}, thereby enabling efficient hardware utilization.
+
+\end{revresponse}
+
+\begin{revcomment}
+The hardware design appears to forcibly adapt to the low-bit quantization method devised in software. 
+%, significantly diminishing the practical applicability of this work. 
+% 硬件设计似乎被迫适应于软件中开发的低比特量化方法，此举严重削弱了该工作的实际应用价值。
+\label{com:5-kernels}
+\end{revcomment}
+\begin{revresponse}[]
+
+% 虽然我们的算子是针对 binary、ternary 设计的，但是我们的算子具有普适性。我们的算子单拿出来可以给任何二值三值 model 加速。
+% 我们的算子能够实现下列二值/三值超低位宽矩阵乘法：
+% (1) binary (-1,+1) x binary (-1,+1)，适用于一般的单一比特二值量化乘法，例如 binary linear、binary query/key matmul，as in [xxx] 
+% (2) binary (0,+1) x binary (-1,+1)，适用于单一比特的二值量化 attention score 和 value matrix 的乘法，as in [xxx] 
+% (3) binary (-1,+1) x tenrary (-1,0,1)，适用于本文中所提出的 binary weight & ternary activation 的线性层 
+% (4) binary (0,+1) x ternary (-1,0,1)，适用于本文中所使用的 binary attention score 和 ternary value matrix 的乘法 
+% (5) ternary (-1,0,1) x ternary (-1,0,1)，适用于本文中所使用的 ternary query/key matmul 
+% 表 3 和表 4 是这五类算子的吞吐量测试，compared with torch.nn.functional （torch 原生的线性层计算）、bnb.nn.Linear4bit （bitsandbytes框架提供的 weight-only 4bit linear 层）、bitlinear_int8xint2 （bitnet 提供的ternary weight 和8-bit integer activation的 linear 层）。测试证明，相比于更高比特的 linear，超低位宽的乘法算子能带来更明显的速度收益。得益于位宽降低和我们的 full-stack cuda 设计，ours 设计的算子比目前业内领先的 bitnet 的int8xint2吞吐量更高：5.545 *10^3 FLOPs vs. 4.068 *10^3 FLOPs。 
+% 表
+% 因为我们在 observation 中提出了引入 0 值的重要性，能够极大提升模型的精度，所以我们在本文中主要选择使用算子 (3)-(5)（Ternary activation）来构建超低位宽模型，保证模型推理速度的同时保证精度。
+% Our optimization is explicitly hardware-aware and the resulting kernels are general-purpose beyond our specific BWTA model. We co-designed the algorithm and kernels around GPU constraints—tiling/CTA shapes, register/shared-memory pressure, memory traffic, packing formats, fused dequant/scaling, and accumulator precision—to achieve measurable device-side gains. 
+We thank the reviewer for raising this point. In the revision, we will clarify the generality of our kernels. It support online binarization, and matrix multiplication with both binary inputs, thus support not only our BWTA setting but also traditional pure binarization. 
+
+\textbf{Generality of the kernels.} Although motivated by binary/ternary quantization, our CUDA kernels accelerate a family of ultra low-bit GEMMs and can be used as drop-in primitives for other binary/ternary models rather than model-specific code. 
+We provide five matrix–multiply variants across binary/ternary models:
+\begin{enumerate}[label={(\arabic*) }]
+    \item Binary $(−1,+1)$ $\times$ Binary $(−1,+1)$: generic 1-bit linear / query $\times$ key;
+    \item Binary $(0,+1)$ $\times$ Binary $(−1,+1)$: 1-bit attention score $\times$ value;
+    \item Binary $(−1,+1)$ $\times$ Ternary $(−1,0,+1)$: BWTA linear (ours);
+    \item Binary $(0,+1)$ $\times$ Ternary $(−1,0,+1)$: 1-bit binary attention scores $\times$ ternary values (ours); 
+    \item Ternary $(−1,0,+1)$ $\times$ Ternary $(−1,0,+1)$: ternary query $\times$ key (ours). 
+\end{enumerate}
+
+\textbf{Throughput of the above 5 variants. } We implement our custom kernel is written in C++ and bound to Python using \texttt{pybind11} to produce a compiled CPython extension module, which is then imported and executed from Python. We benchmark all five primitives against:
+\begin{itemize}
+    \item \texttt{torch.nn.functional} (FP16/BF16 linear); 
+    \item \texttt{bnb.nn.Linear4bit} (bitsandbytes 4-bit weight-only quantization); 
+    \item \texttt{bitlinear\_int8xint2} (BitNet ternary-weight / int8-activation). 
+\end{itemize}
+Results are showcased in Table~\ref{tab:kernel_bench} and Table~\ref{tab:kernel_bench_256}. Under the same GPU/driver/CUDA stack, our ultra-low-bit kernels outperform all the competitives. Moreover, ultra-low-bit kernels yield higher throughput than higher-bit linear baselines; notably, our best configuration exceeds the BitNet int8$\times$int2 kernels ($5.545\times10^3$ FLOPs vs. $4.068\times10^3$ FLOPs). 
+
+These results indicate the kernels are not ``forced to fit'' one software design, but rather hardware-optimized building blocks applicable to diverse binary/ternary schemes. Given our observation that retaining zeropoints in activations markedly improves accuracy in ultra low-bit quantization, the paper primarily adopts variants (3)–(5) (ternary activations) to balance speed and quality. 
+
+\input{tabs/speed_kernel_benchmark}
+
+\end{revresponse}
+
+
+\begin{revcomment}
+The software optimization process fails to adequately consider hardware characteristics and parameters. 
+
+\end{revcomment}
+\begin{revresponse}[]
+
+We thank the reviewer for the concern and respectfully note that our software optimization is explicitly hardware-aware. The following choices reflect co-optimization with the GPU rather than a software-only design: 
+\begin{itemize}
+    \item \textbf{Bitwise compute}: BWTA's $\{-1,0,+1\}$ representations map naturally to \texttt{xnor/and} and \texttt{popcount} bitwise operations when conducting matrix multiplications, improving arithmetic intensity and reducing memory footprint versus higher-bit operations. 
+    \item \textbf{Memory \& tiling}: We align low-bit packing to MMA tile layouts (e.g., m8n8k128, m16n8k128) to avoid reformatting overheads. We also co-optimize for shared-memory capacity, and register pressure by double buffering strategy. 
+    \item \textbf{Local processing in SIMT}: We fuse the quantization/dequantization into a single kernel, keep intermediates in registers to avoid round-trips to shared memory. 
+\end{itemize}
+Collectively, BWTA enables efficient bitwise operations with high instruction throughput, and the kernels were engineered with efficient tiling strategy, memory hierarchy, and instruction combination to realize measurable device-side and end-to-end gains. These were co-tuned with hardware-in-the-loop profiling, not chosen in a software-only manner. 
+
+We further note that many prior works of ultra low-bit quantization on both BERT-based~\cite{bebert,liu2022bit,mlbert,qin2022bibert} and LLM-based~\cite{shang2023pbllm,chen2024dbllm,huang2024billm} report algorithmic results without providing device-level kernels implementations, making end-to-end acceleration unverifiable. Our work fills this gap by delivering custom ultra low-bit kernels for accelerating the dominant matrix multiplications for the first time. 
+
+\end{revresponse}
+
+
+\begin{revcomment}
+GPU's high power and low configurability weaken the value of algorithm–hardware co-design; consider FPGA/ASIC experiments. 
+
+% Due to its high power consumption and low configurability, the GPU, as the hardware platform, reduces the overall value of algorithm-hardware co-design throughout the article. Since the article has already achieved bit-level and gate-level operations, could the author consider deploying experiments on practical circuits such as FPGA/ASIC?
+
+% 鉴于图形处理单元(GPU)作为硬件平台，其高能耗与低可配置性削弱了全文算法-硬件协同设计的整体价值。鉴于文章已实现位级与门级运算，作者是否可考虑在FPGA/ASIC等实际电路上开展实验验证？
+\end{revcomment}
+\begin{revresponse}[]
+
+Thank you for this constructive suggestion. However, our kernel design is intentionally targeted at GPU/CPU to address today's dominant deployment stack for LLM training and inference. We chose GPUs for three reasons:
+\begin{enumerate}
+    \item Relevance \& comparability. GPUs are the de-facto platform for LLMs; evaluating on a single commodity platform enables fair, reproducible comparisons with existing low-bit baselines and real workloads (prefill/decode), without confounds from heterogeneous boards or toolchains.
+    \item Co-design within real constraints. Our work co-optimizes BWTA with GPU realities (MMA tile geometry, register/shared-memory limits, low-bit instruction throughput, packing/layout). This is not software-only; the algorithmic choices were made because they map efficiently to GPU bitwise execution paths.  
+    \item Community choice. GPU kernels can be immediately adopted by the most frameworks and toolkits, benefiting a wide range of models and inference pipelines. 
+\end{enumerate}
+
+We agree that FPGA/ASIC can further improve energy efficiency. However, our GPU-oriented kernels and layouts are not a 1:1 drop-in for FPGA/ASIC due to different instruction sets, memory hierarchies, and tool flows. Translating BWTA to custom silicon requires additional micro-architectural design (e.g., bit-serial/bit-parallel data paths, dsp-packing strategies, on-chip SRAM tiling, scale fusion), which is beyond the present scope. We leave it to our future works. 
+\end{revresponse}
+
+\begin{revcomment}
+Comparing BWTA to FP16 in Table 4 is neither scientific nor fair; please compare against other low-bit methods on GPUs or against more cost-/power-efficient platforms would be more meaningful. 
+
+% The paper implements a low-bit BWTA framework, but its performance comparison with FP16 half-precision models in TABLE 4 is neither scientific nor fair, as low-bit methods inherently benefit from shorter bit-widths. If the authors aim to highlight the advantages of GPU deployment, comparative experiments with other low-bit methods on GPUs or against more cost-effective and power-efficient hardware platforms would be more meaningful.
+
+% 本文提出了低比特位宽的BWTA框架，然而在表4中将其与FP16半精度模型进行性能对比，既不严谨也不公正，因为低比特位宽方法天然受益于更短的位宽。若作者旨在凸显GPU部署的优势，则在GPU上与其他低比特位宽方法进行对比，或与更具性价比和能效比的硬件平台进行较量，将更具实际意义。
+\end{revcomment}
+\begin{revresponse}[]
+
+We thank the reviewer for this helpful suggestion. We agree that ultra low-bit methods benefit from shorter bit-widths and that fair comparisons should include other low-bit GPU baselines. 
+
+To this end, in the revised version, we now compare our speedup against bitsandbytes 4-bit (NF4, QLoRA)\footnote{https://huggingface.co/docs/transformers/en/quantization/bitsandbytes\#qlora}, AutoGPTQ 4-bit weight-only\footnote{https://huggingface.co/Intel/gemma-2b-int4-inc}, and BitNet-b1.58 (ternary-weight / int8-activation with custom int8$\times$int2 kernels)\footnote{https://github.com/microsoft/BitNet/tree/main/gpu}, in addition to FP16/BF16. We report kernel-level device times and end-to-end prefill/decode under the same hardware and software stack, various batch sizes, context lengths, and generation lengths. Detailed discussion and results can be found in Comment~\ref{com:llm-e2e-speed} to Reviewer 1. 
+
+To the best of our knowledge, we provide the first full-stack CUDA implementation of binary/ternary matrix multiplication for Transformer workloads. 
+We agree with the reviewer's opinion that ultra low-bit methods benefit from shorter bit widths and thus can deliver more pronounced performance gains. However, at present, GPUs lack native MMA support for binary/ternary arithmetic. 
+Therefore, we provide kernels at ultra-low bitwidth that cover all matrix multiplications in the Transformer architecture. Beyond bit-width alone, our kernels incorporate hardware-aware optimizations to ensure the real acceleration. 
+\end{revresponse}
+
+
+\begin{revcomment}
+A critical challenge in low-bit quantization is implementing global nonlinear functions (Softmax, LayerNorm). Without targeted optimization, practical efficacy is compromised. 
+% A critical challenge in low-bit quantization for Transformers lies in the implementation of global non-linear functions such as Softmax and LayerNorm. Without targeted optimization of these components, the practical efficacy of quantization would be severely compromised. However, the authors seem to overlook this important aspect in the paper.
+
+% 在Transformer的低比特量化过程中，一个关键的难题在于实现全局非线性函数（如Softmax和LayerNorm）。若不对这些组件进行针对性的优化，量化技术在实际应用中的效果将大打折扣。然而，作者在文中对此重要环节似乎有所忽略。
+\end{revcomment}
+\begin{revresponse}[]
+
+\input{tabs/speed_profile}
+
+We thank the reviewer for this expert observation. In our study we target the dominant GPU bottlenecks (i.e., matrix multiplications in linear/attention) and keep nonlinearities in higher precision (BF16 for LLMs; FP32 for BERT). This choice is motivated by the following rationales: 
+\begin{itemize}
+    \item \textbf{GEMM dominate latency. } We report an operator-wise breakdown in Table~\ref{tab:profile-prefill} and Table~\ref{tab:profile-decode} for prefill and decode phases. It shows the total elapsed device-side CUDA time for different operator categories. 
+    Results demonstrate that GEMM and attention pathways cost the most end-to-end latency on GPUs, while Softmax/LayerNorm/GELU contribute a comparatively small share. For Llama, when dealing with longer sequence length (>1k) and larger batch sizes (4/8), and for all tested cases on BERT, time spent on matrix multiplications are always much more than the nonlinearities. 
+    % : (i) \texttt{aten::*mm} for all matrix multiplication operators (such as \texttt{F.linear}, \texttt{torch.matmul}, \texttt{torch.bmm}); (ii) \texttt{aten::softmax}; (iii) \texttt{aten::*norm} includes all the normalization operators (LayerNorm, RMSNorm, BatchNorm, etc.); (iv) \texttt{aten::*lu} contains nonlinear activation functions like SiLU and GeLU. 
+    \item \textbf{Numerical stability.} Retaining LayerNorm/Softmax in higher precision stabilizes training and inference under ultra low-bit quantization, preventing degradation or collapse. This observation is reported and used in BitNet-b1.58~\cite{wang2023bitnet}, and is consistent with our findings. Meanwhile, many prior work on both BERT-based and LLM-based binarization methods also adopt the same practice to keep the nonlinearities with higher bitwidth floating-point operations~\cite{liu2022bit, qin2022bibert, huang2024billm, shang2023pbllm}. 
+    \item \textbf{Integer quantization on nonlinearities may require customized hardware.} We acknowledge concurrent progress on quantizing nonlinearities with specialized hardware. Notably, SoftmAP~\cite{rakka2024} proposes an customized hardware, associative-processor (AP) architecture, which is built on content-addressable memory (CAM) to accelerate an integer-approximate softmax. SOLE~\cite{sole} designs E2Softmax and AILayerNorm as low-bit quantized variants of nonlinear functions, and implements by customized hardware unit on AISCs.  These work are promising for specialized hardware, while we adopted modern GPUs to ensure fair and reproducible comparisons with other low-bit methods, avoiding confounds from heterogeneous hardware resources and implementation. 
+\end{itemize}
+
+In sum, due to the lower time cost and representation stability of nonlinear operators on GPUs, we keep global nonlinear ops high-precision. We ensure these motivations and results are clearly stated in the revision. 
+
+\end{revresponse}
+
+
+\begin{revcomment}
+Table 2 uses references older than three years; please compare with more recent works.
+% The accuracy comparison in the TABLE 2 of Section 7.4 in the article is with references from more than 3 years ago. Please include comparisons with more recent works. 
+% Accuracy 表 2 需要和更新的 paper 对比
+\end{revcomment}
+\begin{revresponse}[]
+\input{tabs/accuracy_glue}
+We thank the reviewer for the suggestion. To ensure comprehensive coverage, we have substantially expanded the related work and our empirical comparisons to include both BERT and LLM based low-bit quantization methods proposed in 2023-2025:
+\begin{itemize}
+    \item BERT-based baselines (Table~\ref{tab:glue}, newly added comparisons are marked in blue): 
+    \begin{itemize}
+        \item Q-BERT~\cite{shen2020qbert}, accepted by the 34th AAAI Conference on Artificial Intelligence (AAAI), 2020.
+        \item Q2BERT (Q8BERT)~\cite{zafrir2019q8bert}, accepted by the 5th Workshop on Energy Efficient Machine Learning and Cognitive Computing - NeurIPS Edition, 2019. 
+        \item TernaryBERT~\cite{zhang2020ternarybert}, acceped by the Conference on Empirical Methods in Natural Language Processing (EMNLP), 2020. 
+        \item BinaryBERT~\cite{bai2021binarybert}, accepted by the 59th Annual Meeting of the Association for Computational Linguistics (ACL), 2021. 
+        \item BiBERT~\cite{qin2022bibert}, accepted by the 9th International Conference on Learning Representations (ICLR), 2021. 
+        \item BiT~\cite{liu2022bit}, accepted by the 36th Annual Conference on Neural Information Processing Systems (NeurIPS), 2022. 
+        \newlyadded{\item BEBERT~\cite{bebert} (W1A4), accepted by the IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP), 2023; 
+        \item MLBERT~\cite{mlbert} (W1A2), accepted by the International Conference on Innovative Engineering Sciences and Technological Research, 2024; 
+        \item BiPFT~\cite{xing2024bipft} (W1A2), accepted by the 38th AAAI Conference on Artificial Intelligence (AAAI), 2024. }
+    \end{itemize}
+    \item LLM-based baselines (\newlyadded{newly added Table~\ref{tab:accuracy-llm-ppl} and Table~\ref{tab:accuracy-llm-cmQA}} in the response of Comment~\ref{com:llm-accuracy} to Reviewer 1):
+    \begin{itemize}
+        \item LLM-QAT~\cite{llm-qat} (W4A16), released by Meta, 2023; 
+        \item SmoothQuant~\cite{xiao2023smoothquant} (W4A16), accepted by 40th International Conference on Machine Learning (ICML), 2023; 
+        \item GPTQ~\cite{gptq} (W2A16), accepted by 11th International Conference on Learning Representations (ICLR), 2023; 
+        \item AWQ~\cite{lin2024awq} (W3A16), accepted by Proceedings of Machine Learning and Systems (MLSys), 2024; 
+        \item OmniQuant~\cite{shao2023omniquant} (W2A16),  accepted by  12th International Conference on Learning Representations (ICLR), 2024; 
+        \item DB-LLM~\cite{chen2024dbllm} (W2A16), accepted by Findings of the Association for Computational Linguistics (ACL Findings), 2024; 
+        \item PB-LLM~\cite{shang2023pbllm} (W1A16), accepted by the 12th International Conference on Learning Representations (ICLR), 2024; 
+        \item BiLLM~\cite{huang2024billm} (W1A16), accepted by the 41st International Conference on Machine Learning (ICML), 2024; 
+        % \item ParetoQ~\cite{ParetoQ}, released by Meta, 2025; 
+        \item BitNet-b1.58~\cite{wang2023bitnet} (W1.5A8), the leading ultra lowbit weight quantization implementation with customized optimized kernels; paper published in February 2024 and pretrained weights released in April 2025. 
+    \end{itemize}
+\end{itemize}
+
+Results on both model architectures show that our BWTA achieves comparable performance mesured on GLUE, Wikitext2, C4 and CommonsenseQA benchmarks, indicating negligible degradation in generation quality, even with lower average bitwidth and model sizes. Full citations and evaluation details are included in the revised Related Work and Experiment sections. 
+
+\end{revresponse}
+
+\begin{revcomment}
+The ``for the first time'' claim for BWTA seems overstated; related BWTA-like/QAT works exist ([1]–[4]). Please clarify distinctions. 
+
+[1] \textit{I. Chung et al., ``Extremely low bit transformer quantization for on-device neural machine translation,'' in Findings of the Association for Computational Linguistics: EMNLP 2020, Online: Association for Computational Linguistics, 2020, pp. 4812–4826. doi: 10.18653/v1/2020.findings-emnlp.433.}
+
+[2] \textit{P.-H. C. Le and X. Li, ``BinaryViT: Pushing binary vision transformers towards convolutional models,'' Jun. 29, 2023, arXiv: arXiv:2306.16678. doi: 10.48550/arXiv.2306.16678.}
+
+[3] \textit{Z. Liu, B. Oguz, A. Pappu, Y. Shi, and R. Krishnamoorthi, ``Binary and ternary natural language generation,'' Jun. 02, 2023, arXiv: arXiv:2306.01841. doi: 10.48550/arXiv.2306.01841.}
+
+[4] \textit{R.-J. Zhu et al., ``Scalable MatMul-free language modeling,'' Jun. 18, 2024, arXiv: arXiv:2406.02528. doi: 10.48550/arXiv.2406.02528.}
+
+% In the Introduction, the authors claim: "Our BWTA Transformer is, for the first time, a Binary Weight and Ternary Activation quantization scheme accompanied by a specialized multi-stage quantization framework designed for efficient training." To the best of my knowledge, BWTA-like and corresponding QAT training frameworks have been proposed before, e.g., in references [1]–[4]. The authors should reconsider the accuracy and rigor of this statement and explicitly clarify the distinctions between their method and those in the cited literature to avoid misinterpretation.
+
+% [1] I. Chung et al., “Extremely low bit transformer quantization for on-device neural machine translation,” in Findings of the Association for Computational Linguistics: EMNLP 2020, Online: Association for Computational Linguistics, 2020, pp. 4812–4826. doi: 10.18653/v1/2020.findings-emnlp.433.
+
+% [2] P.-H. C. Le and X. Li, “BinaryViT: Pushing binary vision transformers towards convolutional models,” Jun. 29, 2023, arXiv: arXiv:2306.16678. doi: 10.48550/arXiv.2306.16678.
+
+% [3] Z. Liu, B. Oguz, A. Pappu, Y. Shi, and R. Krishnamoorthi, “Binary and ternary natural language generation,” Jun. 02, 2023, arXiv: arXiv:2306.01841. doi: 10.48550/arXiv.2306.01841.
+
+% [4] R.-J. Zhu et al., “Scalable MatMul-free language modeling,” Jun. 18, 2024, arXiv: arXiv:2406.02528. doi: 10.48550/arXiv.2406.02528.
+% 8. The manuscript contains several linguistic inaccuracies that may lead to confusion. For instance, in Chapter III: "Therefore, ternary activation mitigates the distortion of tiny values around zero, making the distribution inconsistent with the full-precision one. " If "inconsistent" is meant to compare with binary quantization, should it instead be "more consistent"?
+
+% 澄清和下列工作的区别，为什么我们 claim BWTA 是首个Binary Weight and Ternary Activation的量化框架。
+\end{revcomment}
+\begin{revresponse}[]
+
+We thank the reviewer for pointing this out and we have revised the claim to be precise and verifiable. Our contribution differs from [1]–[4] along quantization setting, training framework, and kernel realization:
+\input{tabs/compare_other_work}
+\begin{itemize}
+    \item \textbf{Unique quantization setting}. 
+    Table~\ref{tab:method_comparison} clarifies the differences between our method and the four cited works in terms of weight/activation bit-widths and model families (for simplicity, scaling factors are omitted from the notation). In the four cited works, [1] and [4] uses full-precision activation, [2] and [3] uses the same bitwidth for weight and activation (1 or 2-bit). To our knowledge, no prior work couples binary weights with ternary activations as our BWTA. 
+
+    \item \textbf{Scope and models.} Prior works either target to small-scale transformer-based models (Transformer~\cite{chung-etal-2020-extremely}, BERT~\cite{liu2022bit}, BART~\cite{liu-2023-binary-and-ternary-nlg}, ViT~\cite{binaryvit}) or large-scale language models (LLM). Our BWTA is verified on both BERT and LLM, with consistent accuracy performance (GLUE, WikiText-2, C4, CommonsenseQA) and system acceleration benefits (prefill/decode). 
+    
+    \item \textbf{Observations and analysis behind ternary activations.}  We observe that Transformer attention outputs are zero-centered with substantial mass near zero, which means that lots of values will remain unfocused, while pure binary activation destroys the filtering function of attention mechanism. Introducing zeropoints using ternary activation restores the representation capability of attention, and improves accuracy in ultra low-bit quantization. This explains why W1A1 harms the accuracy, consistent with what is reported in [3]. And W1A2 is validated to be more viable for Transformers-based architectures. 
+
+    \item \textbf{Training framework for ultra low-bit. } We propose a Smooth Multi-Stage Quantization schedule that level-wise degrades activation bins (e.g., $L=\{9,7,5,3\}$) to maintain convergence while steering the network toward the final W1A2 target. This staged, zero-preserving path is distinct from the training protocols in [1]–[4].
+
+    \item \textbf{Customized kernel. } To turn the setting into real speedups, we provide the first full-stack CUDA kernels for ultra low-bit quantization on GPUs. As mentioned in Comment~\ref{com:5-kernels}, our custimzed kernel not only support the binary-weight $\times$ ternary-activation GEMMs, but also the pure (naive) binary matrix multiplications in Transformers architecture. We reduce the bitwise ops (Fig. 9, \textit{Case 1}), align bit-packing to MMA tile shapes, and optimize the register reuse, yielding substantial device-side gains and end-to-end real speedups. 
+    In contrast, all the mentioned low-bit quantization works do not provide low-level implementations, making end-to-end acceleration unverifiable. 
+\end{itemize}
+
+We have updated the manuscript to remove ambiguous phrasing and to restate our novelty precisely:
+\begin{changes}
+We present, to the best of our knowledge, the first binary-weight \& ternary-activation (BWTA) quantization scheme for Transformer-based architectures, as well as the first end-to-end system support for ultra-low bitwidth inference on GPUs. It maintains model performance by smooth multi-stage training strategy, and can be seamlessly integrated into various transformer-based models and structures to enjoy the speedup benefits. Our work paves the way for ultra-low bit quantization for Transformer-based architectures, demonstrating its practical utility through accuracy performance and low inference latency. 
+\end{changes}
+
+\end{revresponse}
+

@@ -27,10 +27,11 @@
 % comment box color
 \definecolor{colorcommentfg}{HTML}{3e96d1}  % 似乎没用上
 \definecolor{colorcommentbg}{HTML}{ededed}  % comment background lightgrey
-\definecolor{colorcommentframe}{HTML}{8faadc}  % comment title background 
+\definecolor{colorcommentframe}{HTML}{62AED4}  % comment title background 
 
 % response text color (including tables)
-\definecolor{maintext}{HTML}{404D92}
+\definecolor{maintext}{HTML}{000000}
+\definecolor{commenttext}{HTML}{23579A}
 
 %\definecolor{colordark}{RGB}{0,63,87}
 %\definecolor{colormedium}{RGB}{0,112,155}
@@ -41,6 +42,9 @@
 \definecolor{colorchangebg}{HTML}{f9daa6} % change box sidebar % f9daa6: orange ; bfdbdc: green
 \definecolor{colorchangetext}{HTML}{000000}  % change text
 \colorlet{colorchangeframe}{black!40}  % no use 
+
+\newcommand{\modified}[1]{\textcolor{red}{#1}}
+\newcommand{\newlyadded}[1]{\textcolor{blue}{#1}}
 
 %%% General Settings
 \setlength{\parindent}{12pt}
@@ -115,15 +119,19 @@
 
 %%% Blocks %%%
 \newenvironment{generalcomment}{%
-	\begin{tcolorbox}[adjusted title={Summary Comment}, fonttitle={\bfseries}, enhanced jigsaw, colbacktitle={colorcommentframe},arc=0pt,boxrule=0em,opacityframe=0,colback={colorcommentbg}]
+	\begin{tcolorbox}[adjusted title={Summary Comment}, fonttitle={\bfseries}, enhanced jigsaw, colbacktitle={colorcommentframe}, coltitle=white, 
+    coltext=commenttext, arc=2pt, outer arc=2pt, boxrule=0em,opacityframe=0,colback={colorcommentbg}, drop shadow={opacity=0.25}]
 }{\end{tcolorbox}}
+% arc=0pt,outer arc=0pt,  # 不要圆角
 
-\newenvironment{revcommentToAssociateAuthor}[1][]{\refstepcounter{reviewcomment@counter}
-	\begin{tcolorbox}[adjusted title={Comment \arabic{reviewcomment@counter} of Associate Editor}, fonttitle={\bfseries}, enhanced jigsaw, colbacktitle={colorcommentframe},arc=0pt,opacityframe=0,boxrule=0em,colback={colorcommentbg},#1]
+\newenvironment{revcommentToAssociateEditor}[1][]{\refstepcounter{reviewcomment@counter}
+	\begin{tcolorbox}[adjusted title={Comment \arabic{reviewcomment@counter} of Associate Editor}, fonttitle={\bfseries}, coltitle=white, 
+    coltext=commenttext, enhanced jigsaw, colbacktitle={colorcommentframe},arc=2pt, outer arc=2pt,opacityframe=0,boxrule=0em,colback={colorcommentbg},drop shadow={opacity=0.25},#1]
 }{\end{tcolorbox}}
 
 \newenvironment{revcomment}[1][]{\refstepcounter{reviewcomment@counter}
-	\begin{tcolorbox}[adjusted title={Comment \arabic{reviewer@counter}.\arabic{reviewcomment@counter}}, fonttitle={\bfseries}, enhanced jigsaw, colbacktitle={colorcommentframe},arc=0pt,opacityframe=0,boxrule=0em,colback={colorcommentbg},#1]
+	\begin{tcolorbox}[adjusted title={Comment \arabic{reviewer@counter}.\arabic{reviewcomment@counter}}, fonttitle={\bfseries}, enhanced jigsaw, colbacktitle={colorcommentframe},coltitle=white, 
+    coltext=commenttext, arc=2pt, outer arc=2pt,opacityframe=0,boxrule=0em,colback={colorcommentbg},drop shadow={opacity=0.25},#1]
 }{\end{tcolorbox}}
 
 
