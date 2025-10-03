@@ -1,171 +1,58 @@
-% Response to Editor
+% Response to Associate Editor
 \AssociateEditor
 \begin{generalcomment}
 The reviewer appreciate the relevance of the work. They hint to a few aspects which should be addressed in a revision:
 \begin{itemize}
-    \item Please argue why you refer to BERT. 
-    \item The presentation could be more concise, please consider considerable shortening and focussed presentation. 
-    \item The novelty of the approach is questionable, at least major references are missing. 
-    \item The experimental evaluation refers to outdated results, uses possibly unfair metrics, and nonlinearity seems a crucial aspect. Please adjust or comment. 
-    \item How about deployment on practical circuits?
+    \item Please argue why you ... 
+    \item The presentation could be more concise ... 
+    \item The novelty ...   
+    \item The experimental evaluation ...
+    \item How about ...
 \end{itemize}
 \end{generalcomment}
 \begin{revmeta}[]
-% We would like to extend my sincere gratitude for your thorough review and valuable feedback on our manuscript. We appreciate the time and effort you have invested in evaluating our work and fully acknowledge the deficiencies you have identified in the presentation and clarity of our study, as well as the missing experiments. 
-
-% We understand the importance of addressing these issues to enhance the quality and impact of our research. Below, we outline the steps to address each of your concerns. 
-We would like to extend my sincere gratitude for your thoughtful suggestions. We understand the importance of addressing these concerns about lengthy narrative, incomplete or potentially unfair comparisons, missing references and baselines, to enhance the quality and impact of our research. Below, we respond to each issue in turn.  
+We would like to extend my sincere gratitude for your thoughtful suggestions. We understand the importance of addressing these concerns about ... to enhance the quality and impact of our research. Below, we respond to each issue in turn.  
 \end{revmeta}
 
 \begin{revcommentToAssociateEditor}
-Please argue why you refer to BERT. 
+Please argue why you ... 
 \label{sec:why-use-bert}
 \end{revcommentToAssociateEditor}
 \begin{revmeta}[]
-% \dyfdraft{1. 投稿的时候 bert 是低比特量化的主流 base model。A2 至今也只有 bert 有，A8 在 LLM 有（加引用和发表时间）。\\
-% 2. BERT 的好处：stable pipeline、没有 generation 随机性的影响、算子是通用经典的，经验可以启发后续研究。\\
-% 3. 我们在 revision 中加了 LLM。}
-
-BERT was the mainstream base model for ultra low-bit activation quantization. At the time of our initial submission, encoder-only BERT-style models were the widely-used base model for research on ultra low-bit quantization. Prior work in ultra low-bit quantization are all benchmarked on BERT, such as BiT~\cite{liu2022bit} (W1A1), BiBERT~\cite{qin2022bibert} (W1A1), MLBERT~\cite{mlbert} (W1A2), BiPFT~\cite{xing2024bipft} (W1A2), BEBERT~\cite{bebert} (W1A4), BinaryBERT~\cite{bai2020binarybert} (W1A8) and so on. While in LLMs, researchers have pushed the bitwidth to W1A8 or W1A16 at most~\cite{shang2023pbllm,chen2024dbllm,huang2024billm,wang2023bitnet}. 
-
-BERT has several advantages: (i) well-established, reproducible evaluation pipelines, (ii) stable, comprehensive capabilities (e.g., classification, sequence labeling and so on) that isolate the effect of quantization from generation dynamics, and (iii) canonical, widely used operators, such as linear layers, self-attention, and LayerNorm. These operators are shared across modern Transformer architectures, therefore, the quantization insights and implementation practices developed on BERT can inspire subsequent work to future works on the ultra lowbit quantization on widely-used modern LLMs. 
-Using BERT therefore allowed us to develop and ablate our approach under controlled conditions and to compare fairly and transparently with prior work. 
-
-Since LLMs are becoming a hot topic in research and require compression and acceleration due to their large parameter and computation complexity, and since our method is not tied to encoder-only BERT architectures, instead targeting the same operator family that are also the fundamental operations in large language models (LLMs), in the revised manuscript we have: 
-\begin{itemize}
-    \item \textbf{Implemented our method on representative LLMs}, covering both the training algorithm and custom CUDA kernels. We then evaluated on WikiText-2, C4, and CommonsenseQA benchmarks following standard LLM evaluation practices.
-    \item \textbf{Reported end-to-end latency, kernel-level throughput, and GPU memory footprint on LLMs} in both prefill and decode phases with various batch sizes and sequence lengths to validate our method on real inference workloads. 
-    \item \textbf{Ploted training loss curves for LLMs} to directly illustrate the method's transferability from the BERT to LLM training, highlighting convergence behavior and stability using our training framework. 
-    \item \textbf{Expanded literature coverage and related work} to include recent low-bit quantization and LLM-based studies, supplementing more comparisons on BERT and extending our method to LLM landscape. 
-\end{itemize}
-
-In sum, the quantization insights and methods established on BERT are consistent with that on LLMs. Our methods achieves leading memory/runtime savings with minimal generation quality loss, supporting the claim that BERT-based investigations productively informed our subsequent LLM quantization. 
-
+    \lipsum[1] \cite{gawlikowski2023survey,bi2018empirical,johnson2019survey}
 \end{revmeta}
 
 
 
 \begin{revcommentToAssociateEditor}
-The presentation could be more concise, please consider considerable shortening and focused presentation. 
+The presentation could be more concise ...
 \end{revcommentToAssociateEditor}
 \begin{revmeta}[]
-
-Thank you for pointing out. We have revised the manuscript to improve focus and readability. In revised version, we reduce length by removing/condensing non-essential details and moving \dyfcomment{更新正文后填入} to the Appendix. 
-And we rewrite abstract with clear structure, focus the narrative by reduce the historical background of previous techniques, and pay more attention to the demonstration of our algorithm–hardware co-design. 
-
+    \lipsum[2] \cite{zhang2021videolt,ganganwar2012overview,cao2019learning}
 \end{revmeta}
 
 
 \begin{revcommentToAssociateEditor}
-The novelty of the approach is questionable, at least major references are missing. 
+The novelty ...
 \end{revcommentToAssociateEditor}
 \begin{revmeta}[]
-Thank you for pointing out. Our revision addresses both (i) the clarity of our contribution and (ii) completeness of related work and extended baselines. 
+    \lipsum[3]
+\end{revmeta}
 
-\paragraph{Clarifying our Novelty. }
-\dyfcomment{更新正文创新点部分}
-\paragraph{Additional References and Comparison Baselines. }
-In our related work, we supplement more recent low-bit quantization works on Transformer-based architectures, such as Transformer~\cite{chung-etal-2020-extremely}, BERT~\cite{xing2024bipft,mlbert,bebert}, BART~\cite{liu-2023-binary-and-ternary-nlg}, ViT~\cite{binaryvit} or LLMs~\cite{llm-qat,xiao2023smoothquant,gptq,lin2024awq,shao2023omniquant,chen2024dbllm,huang2024billm}, discuss their findings and compare the methods. 
-
-In term of comparison baselines, we expanded the coverage to include both BERT and LLM-based binarization methods. Details on the comparison methods, updated metrics and benchmarks, and major comparison results can be found in the next comment~\ref{com:more_baselines}. 
-
-We hope these additions make the novelty and scope of our contribution clearer and address the concern about missing references.
+\begin{revcommentToAssociateEditor}
+Additional References and Comparison Baselines. 
+\end{revcommentToAssociateEditor}
+\begin{revmeta}[]
+    \lipsum[4]
 \end{revmeta}
 
 
 \begin{revcommentToAssociateEditor}
-The experimental evaluation refers to outdated results, uses possibly unfair metrics, and nonlinearity seems a crucial aspect. Please adjust or comment.
-\label{com:more_baselines}
+The experimental evaluation ...
 \end{revcommentToAssociateEditor}
 \begin{revmeta}[]
-
-We appreciate the associate editor's detailed comments. We have strengthened our evaluation along three aspects: (i) expanded baselines to include 2023-2025 methods on both BERT and LLM-based architectures , (ii) metric fairness and real workloads scenarious, and (iii) a deeper analysis of nonlinear components in Transformer-based models. 
-
-\paragraph{Expanded Baselines for Comparisons. }
-To ensure comprehensive coverage, we have substantially expanded the related work and our empirical comparisons to include both BERT and LLM based low-bit quantization methods:
-\begin{itemize}
-    \item BERT-based baselines: 
-    \begin{itemize}
-        \item BEBERT~\cite{bebert} (W1A4), accepted by the IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP), 2023; 
-        \item MLBERT~\cite{mlbert} (W1A2), accepted by the International Conference on Innovative Engineering Sciences and Technological Research, 2024; 
-        \item BiPFT~\cite{xing2024bipft} (W1A2), accepted by the 38th AAAI Conference on Artificial Intelligence (AAAI), 2024. 
-    \end{itemize}
-    \item LLM-based baselines:
-    \begin{itemize}
-        % \item QLoRA (4bit NF4 weight-only quantization), accepted by 37th the Annual Conference on Neural Information Processing Systems (NeurIPS) 2023, which brings memory-saving and acceleration while does not compromise performance, implemented in bitsandbytes in January 2024; % incorporated into our speedup comparisons and discussion. 
-        \item LLM-QAT~\cite{llm-qat} (W4A16), released by Meta, 2023; 
-        \item SmoothQuant~\cite{xiao2023smoothquant} (W4A16), accepted by 40th International Conference on Machine Learning (ICML), 2023; 
-        \item GPTQ~\cite{gptq} (W2A16), accepted by 11th International Conference on Learning Representations (ICLR), 2023; % , which is a widely used weight-only PTQ toolkit; initial public release in January 2023; % incorporated into our speedup comparisons and discussion. 
-        \item AWQ~\cite{lin2024awq} (W3A16), accepted by Proceedings of Machine Learning and Systems (MLSys), 2024; 
-        \item OmniQuant~\cite{shao2023omniquant} (W2A16),  accepted by  12th International Conference on Learning Representations (ICLR), 2024; 
-        \item DB-LLM~\cite{chen2024dbllm} (W2A16), accepted by Findings of the Association for Computational Linguistics (ACL Findings), 2024; 
-        \item PB-LLM~\cite{shang2023pbllm} (W1A16), accepted by the 12th International Conference on Learning Representations (ICLR), 2024; 
-        \item BiLLM~\cite{huang2024billm} (W1A16), accepted by the 41st International Conference on Machine Learning (ICML), 2024; 
-        % \item ParetoQ~\cite{ParetoQ}, released by Meta, 2025; 
-        \item BitNet-b1.58~\cite{wang2023bitnet} (W1.5A8), the leading ultra lowbit weight quantization implementation with customized optimized kernels; paper published in February 2024 and pretrained weights released in April 2025. % incorporated into our discussion on differences and accuracy/efficiency comparisons. 
-    \end{itemize}
-\end{itemize}
-
-In the revised manuscript, we cite these works explicitly in the Related Work section, discussed the differences and compare our method against them in our revised version. 
-
-\paragraph{Updated Comparison Metrics: Kernel-level and End-to-End Evaluation Under Realistic Workloads. } 
-To address the fairness of our metrics, we made the following concrete changes: 
-\begin{itemize}
-    \item \textbf{Kernel-level timing compared to SOTA low-bit linear operators.} We add more comparisons of device-side CUDA time for the actual kernels using the same GPU platforms and configurations (NVIDIA H800 with 96 GB VRAM, Driver Version: 550.9, CUDA Version 12.4), same precision policy for non-target operators (BF16 for LLMs and FP32 for BERTs), same tokenizer, identical warmup iterations, repeat times, and batch/sequence settings. 
-    Concretely, we additionally provide the following new results in Table~\ref{tab:kernel_bench} and Table~\ref{tab:kernel_bench_256}:
-    \begin{enumerate}[label={(\arabic*)}]
-        \item Comparisons with acceleration kernels: \textit{bitsandbytes'} 4-bit (NF4) quantized linear kernel\footnote{https://huggingface.co/docs/bitsandbytes/en/reference/nn/linear4bit}, BitNet-b1.58 custom int8$\times$int2 linear kernels\footnote{https://github.com/microsoft/BitNet/tree/main/gpu}.
-        \item Performance of purely binarized variants (supported by our BWTA implementation) for linear and A$\times$V operations. 
-        \item Average latency ($\mu s$) and throughput (FLOPs) comparisons for the above kernels under 100 repeats. 
-    \end{enumerate}
-    
-    \item \textbf{End-to-end latency/throughput.} To validate our method under realistic scenarios, we compare our method with various quantization implementations, and report the prefill and decode latency
-    across diverse batch sizes, prefill length, and generation length in Table~\ref{tab:prefill-bench} and Table~\ref{tab:decode-bench}. Concretely, we add the following new results: 
-    \begin{enumerate}[label={(\arabic*)}]
-        \item Comparisons with quantization acceleration implementations by \textit{bitsandbytes}' 4-bit (NF4) weight-only quantization with QLoRA\footnote{https://huggingface.co/docs/transformers/en/quantization/bitsandbytes\#qlora}, \textit{AutoGPTQ}'s 4-bit weight-only PTQ with GPTQ\footnote{https://github.com/AutoGPTQ/AutoGPTQ}, and \textit{Microsoft}'s BitNet-b1.58\footnote{https://github.com/microsoft/BitNet/tree/main/gpu}. 
-        \item Throughput of multi-batch prefill (up to 16) and diverse context length (up to 2048) to simulate server-style batching. See Table~\ref{tab:prefill-bench}; 
-        \item Single-request latency (batch is 1) with various  generated length ($\approx$50/100/150) to measure the decoding latency in interactive use. See Table~\ref{tab:decode-bench}; 
-        \item Model storage (GB) and peak GPU memory footprint (GB) under all the above settings and test cases. 
-    \end{enumerate}
-    
-\end{itemize}
-
-\paragraph{Analysis of nonlinearities (Softmax, LayerNorm, etc.). } 
-Our study focuses on the primary performance bottlenecks on modern GPUs and keeps nonlinearities in BF16 for LLM and FP32 for BERT while aggressively quantizing the matmul operations. We clarify this rationale and provide new quantitative evidence and analysis: 
-\begin{itemize}
-    \item \textbf{Operator-wise time breakdown.} We report an operator-wise breakdown showing that GEMM/attention pathways dominate end-to-end time on GPUs, whereas softmax/LayerNorm/GELU contribute a comparatively small share under representative prefill/decode workloads. See Table~\ref{tab:profile-prefill} and Table~\ref{tab:profile-decode} for operator breakdown in prefill and decode phases, respectively. 
-    \item \textbf{Numerical stability in training. } Keeping LayerNorm and Softmax in higher precision on GPUs also preserves numerical stability, preventing the accuracy collapse under ultra low-bit quantization. This observation is reported and used in BitNet-b1.58~\cite{wang2023bitnet}. Meanwhile, many prior work on both BERT-based and LLM-based binarization methods also adopt the same practice to keep the nonlinearities with higher bitwidth floating-point operations~\cite{liu2022bit, qin2022bibert, huang2024billm, shang2023pbllm}. 
-    \item \textbf{Integer quantization on nonlinearities may require customized hardware. } We acknowledge concurrent progress on quantizing nonlinearities with specialized hardware. Notably, SoftmAP~\cite{rakka2024} proposes an customized hardware, associative-processor (AP) architecture, which is built on content-addressable memory (CAM) to accelerate an integer-approximate softmax. SOLE~\cite{sole} designs E2Softmax and AILayerNorm as low-bit quantized variants of nonlinear functions, and implements by customized hardware unit on AISCs.  These work are promising for specialized hardware, while we adopted modern GPUs to ensure fair and reproducible comparisons with other low-bit methods, avoiding confounds from heterogeneous hardware resources and implementation.
-\end{itemize}
-
-
-\paragraph{Major Comparison Results and Conclusions. } 
-\begin{itemize}
-    \item \textbf{Versus BERT-side baselines (e.g., BEBERT/MLBERT/BiPFT),} our work achieves leading accuracy performance on GLUE benchmark, attains an average score of 80.4\%, XX\% higher than all previous binarization works. 
-    \item\textbf{Versus LLM binarization (e.g., PB-LLM, DB-LLM, BiLLM, BitNet),} we use the lowest activation bitwidth while maintains the model perplexity on Wikitext2 (13.12) and C4 (13.08) and generation accuracy in CommonsenseQA benchmark (averagely 46.1). \dyfcomment{结果数据按最好的 3B 改下}
-    \item \textbf{Versus weight-only PTQ (e.g., AutoGPTQ, QLoRA),} our kernels  optimizes both the prefill and decoding latency under diverse batch sizes and context workloads with much less GPU memory footprint, enabling larger batch sizes in serving scenarios. 
-    \item \textbf{Versus ultra–low-bit linear-only (e.g., BitNet-b1.58).} Our BWTA quantization scheme further achieves 216-330 tokens/s end-to-end speedup under multiple batch sizes during prefill. And for linear ops, we also achieve 1.1$\times$ kernel-level acceleration. 
-\end{itemize}
-
-To our knowledge, these results provide the first practical validation that ternary activation quantization is viable for ultra low-bit LLMs, providing real acceleration on both prefill and decode paths while preserving generation quality. 
-
+    \lipsum[5]
 \end{revmeta}
-
-
-\begin{revcommentToAssociateEditor}
-How about deployment on practical circuits?
-\end{revcommentToAssociateEditor}
-\begin{revmeta}[]
-Thank you for this constructive suggestion. Our kernel design is intentionally targeted at GPU/CPU to address today's dominant deployment stack for LLM training and inference. We chose GPUs for three reasons:
-\begin{enumerate}
-    \item Relevance \& comparability. GPUs are the de-facto platform for LLMs; evaluating on a single commodity platform enables fair, reproducible comparisons with existing low-bit baselines and real workloads (prefill/decode), without confounds from heterogeneous boards or toolchains.
-    \item Co-design within real constraints. Our work co-optimizes BWTA with GPU realities (MMA tile geometry, register/shared-memory limits, low-bit instruction throughput, packing/layout). This is not software-only; the algorithmic choices were made because they map efficiently to GPU bitwise execution paths.  
-    \item Community choice. GPU kernels can be immediately adopted by the most frameworks and toolkits, benefiting a wide range of models and inference pipelines. 
-\end{enumerate}
-
-We agree that FPGA/ASIC can further improve energy efficiency. However, our GPU-oriented kernels and layouts are not a 1:1 drop-in for FPGA/ASIC due to different instruction sets, memory hierarchies, and tool flows. Translating BWTA to custom silicon requires additional micro-architectural design (e.g., bit-serial/bit-parallel data paths, dsp-packing strategies, on-chip SRAM tiling, scale fusion), which is beyond the present scope. We leave it to our future works. 
-\end{revmeta}
-
 
 \clearpage
 \printbibliography[heading=bibliography, title={References}, section=\therefsection]

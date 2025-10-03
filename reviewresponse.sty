@@ -33,18 +33,22 @@
 \definecolor{maintext}{HTML}{000000}
 \definecolor{commenttext}{HTML}{23579A}
 
-%\definecolor{colordark}{RGB}{0,63,87}
-%\definecolor{colormedium}{RGB}{0,112,155}
-%\definecolor{colorlight}{RGB}{102,180,211}
-%\colorlet{colorcommentbg}{colorlight!20}
-
 %%%% change box color
 \definecolor{colorchangebg}{HTML}{f9daa6} % change box sidebar % f9daa6: orange ; bfdbdc: green
 \definecolor{colorchangetext}{HTML}{000000}  % change text
 \colorlet{colorchangeframe}{black!40}  % no use 
 
 \newcommand{\modified}[1]{\textcolor{red}{#1}}
-\newcommand{\newlyadded}[1]{\textcolor{blue}{#1}}
+\newcommand{\added}[1]{\textcolor{blue}{#1}}
+
+\newenvironment{addedenv}{%
+  \begingroup
+%   \arrayrulecolor{blue}
+  \captionsetup{labelfont={color=blue}, textfont={color=blue}}%
+  \color{blue}%
+}{%
+  \endgroup
+}
 
 %%% General Settings
 \setlength{\parindent}{12pt}

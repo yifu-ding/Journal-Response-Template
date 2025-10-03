@@ -1,13 +1,13 @@
 \documentclass[12pt,american,UTF8]{article}
-\usepackage[UTF8]{ctex}
+% \usepackage[UTF8]{ctex}
 \usepackage[T1]{fontenc}
 \usepackage{fourier}
 \usepackage[hidelinks]{hyperref}
 \usepackage{babel}
 \usepackage[babel]{microtype}
 \usepackage[babel]{csquotes}
-\usepackage[journal={IEEE Transactions on Neural Networks and Learning Systems},
-			manuscript={TPAMI-2024-11-3068},
+\usepackage[journal={IEEE Transactions on XXX},
+			manuscript={TXXX-YYYY-MM-IDID},
 			editor={Mrs. Joyce Arnold}]{reviewresponse}
 			
 \usepackage{fancyhdr}
@@ -21,7 +21,10 @@
 \usepackage[backend=biber,style=ieee,dashed=false,url=false,isbn=false,defernumbers=false,refsection=section]{biblatex}
 
 \usepackage{amsmath,amsfonts}
+\PassOptionsToPackage{draft}{graphicx}
 \usepackage{graphicx}
+\usepackage{fontspec}
+
 \usepackage[table]{xcolor}
 \usepackage{multirow}
 \usepackage{booktabs}
@@ -53,9 +56,6 @@
 \definecolor{color2}{rgb}{0.7843,0.7843,0.6627}
 \definecolor{color3}{rgb}{0.5137,0.6862,0.6078}
 
-\newcommand{\dyfdraft}[1]{\textcolor{gray}{#1}}
-\newcommand{\dyfcomment}[1]{\textcolor{red}{\bf [Comments: #1] }} 
-
 \usepackage{amsthm}
 \theoremstyle{plain}  %plain,definition,remark
 \newtheorem{theorem}{Theorem}
@@ -63,8 +63,12 @@
 \newtheorem{lemma}{Lemma}
 \newtheorem{corollary}{Corollary}
 
+% \usepackage{algorithm}
+% \usepackage{algorithmic}
+\usepackage{float}          % 为了 [H]
 \usepackage{algorithm}
-\usepackage{algorithmic}
+\usepackage{algpseudocode}  % algorithmicx 的伪码环境
+
 
 \usepackage{tikz}
 \def\checkm{\tikz\draw[thick,scale=0.2] (0,0.4) -- (0.4,0) -- (1,1);}
@@ -89,16 +93,16 @@
 }
 
 
-%\bibliography{literature.bib}
+\bibliography{literature.bib}
 \addbibresource{literature.bib}
 
 % \definecolor{lightblue}{RGB}{60, 39, 139}
 
-\title{Accurate and Efficient Binarized Transformer by Algorithm-Hardware Co-design}
+\title{The Title of the Great Paper}
 
 % If you do not need author information (double-blind review), please modify the \renewcommand*{\maketitle} function in reviewresponse.sty
-\author{FirstAuthors (Institution1; FirstAuthors@126.com)\\
-		SecondAuthors (Institution2; SecondAuthors@126.com)}
+\author{FirstAuthors (Institution1; FirstAuthors@edu)\\
+		SecondAuthors (Institution2; SecondAuthors@edu)}
 
 
 \begin{document}
@@ -107,16 +111,16 @@
 \tableofcontents
 
 % Cover Letter
-%\clearpage
+\clearpage
 \input{cover_letter.tex}
 \setcounter{page}{0}
 \pagestyle{fancy}
 \fancyfoot[R]{\thepage\ / \pageref{LastPage}}
-\fancyfoot[L]{Response Letter for TPAMI-2024-11-3068}
+\fancyfoot[L]{Response Letter for TXXX-YYYY-MM-IDI}
 \fancyfoot[C]{\ }
 
 
-% \input{Responses/Editor}
+\input{Responses/Editor}
 \input{Responses/AssociateEditor}
 \input{Responses/R1}
 \input{Responses/R2}

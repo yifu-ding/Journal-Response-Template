@@ -3,105 +3,54 @@
 \reviewer
 
 \begin{generalcomment}
+    \textbf{General Comments:} The paper offers an extensive overview of the latest confidence calibration techniques for deep imbalanced learning, presenting significant and relevant research. However, there are a few areas where improvement could be made.
+   
+    \textbf{Strengths:} (i) xxx; (ii) xxx; (iii) xxx.
 
-\textbf{General Comments:} This paper presents an effective algorithm–hardware co-design for Transformers via Binary Weight \& Ternary Activation (BWTA) with a Smooth Multi-Stage Quantization framework to mitigate accuracy degradation in ultra-low-bit settings. A custom BWTA MatMul CUDA kernel achieves $16-24\times$ speedup over FP16 MatMul. Extensive experiments and thorough ablations substantiate the approach. 
+    \textbf{Areas for Improvement:} (i) xxx; (ii) xxx. 
+     
+    \textbf{Weaknesses:} (i) xxx; (ii) xxx. 
 
-\textbf{Strengths:} (i) Innovative BWTA co-design; (ii) thorough and convincing experimental evaluations; (iii) comprehensive ablation studies clarifying each component’s contribution. 
-
-\textbf{Areas for Improvement:} (i) Model selection is outdated; (ii) end-to-end inference speedup results are missing. 
-
-% 原文
-% His paper presents an effective co-design of ultra-low bitwidth quantization and GPU kernels specifically tailored for Transformer models. The authors propose a Binary Weight \& Ternary Activation (BWTA) Transformer utilizing a Smooth Multi-Stage Quantization framework to address the accuracy degradation commonly observed in ultra-low bit quantization. Furthermore, the custom-designed BWTA MatMul CUDA kernel demonstrates significant computational acceleration ($16-24\times$ speedup compared to FP16 MatMul). The extensive experiments and thorough ablation studies validate the efficacy of the proposed approach.
-
-% Strengths:
-% - Innovative algorithm-hardware co-design through binary weight and ternary activation quantization.
-% - Thorough and convincing experimental evaluations.
-% - Comprehensive ablation studies clearly demonstrating the contributions of each component.
-
-% Areas for Improvement:
-% - Model selection (BERT) is somewhat outdated; modern architectures such as Llama 3.1, DeepSeek, or at least Llama 2, should be evaluated.
-% - End-to-end inference speedup results are missing.
 \end{generalcomment}
 \begin{revmeta}[]
-We would like to express our sincere gratitude for your feedback and valuable suggestions on our manuscript. We have carefully considered each of your points and revised them carefully. 
+	We would like to express our sincere gratitude for your feedback and valuable suggestions on our manuscript. We have carefully considered each of your points and revised them carefully.
 \end{revmeta}
 
 \begin{revcomment}
-Model selection (BERT) is somewhat outdated; modern architectures such as Llama 3.1, DeepSeek, or at least Llama 2, should be evaluated. 
-\label{com:llm-accuracy}
-% （BERT 有点老了，需要在 Llama 3.1, DeepSeek, 或者至少 Llama 2 上测试）
+A summary of the practical domains where these methods have been applied, or could be applied, is missing.
 \end{revcomment}
 \begin{revresponse}[]
-Thank you for the pertinent suggestions. We initially refer to BERT since it is the mainstream and widely-used base model for ultra low-bit quantization. Prior works on ultra low-bit  quantization~\cite{liu2022bit,bai2020binarybert,qin2022bibert,xing2024bipft,bebert} are all benchmarked on BERT. And BERT share the same operators across modern Transformer-based LLMs. More detailed rationales can be found at the response to Comment~\ref{sec:why-use-bert} of Associate Editor. 
+	Thank you for the pertinent suggestions. We agree with your point of view. We added an application section (Section VIII) on the 18th page of the revised manuscript. For your convenience, we put the newly added application section below, and we hope it will satisfy you.
+	
+	\input{utils/tables/table2}
+	\lipsum[4] \cite{gao2022comparative,zidonghua} The table is shown in Table~\ref{tab:table2}.
 
-Since LLMs are becoming prevail today, we have followed the suggestion to evaluate on modern decoder-only LLMs. 
-% In the revision, we report results for our BWTA ultra low-bit quantization on representative LLMs ($\le$3B parameters), covering both the prefill and decode phases. We assess generation quality via perplexity on WikiText-2 and C4, and accuracy on CommonsenseQA benchmarks, following common LLM evaluation practice. 
-In the revision, we extend our method to LLMs with 700M, 1.3B, 2B, 3B parameters, and compare with the following LLM-based baselines: 
-    \begin{itemize}
-        % \item QLoRA (4bit NF4 weight-only quantization), accepted by 37th the Annual Conference on Neural Information Processing Systems (NeurIPS) 2023, which brings memory-saving and acceleration while does not compromise performance, implemented in bitsandbytes in January 2024; % incorporated into our speedup comparisons and discussion. 
-        \item LLM-QAT~\cite{llm-qat} (W4A16), released by Meta, 2023; 
-        \item SmoothQuant~\cite{xiao2023smoothquant} (W4A16), accepted by 40th International Conference on Machine Learning (ICML), 2023; 
-        \item GPTQ~\cite{gptq} (W2A16), accepted by 11th International Conference on Learning Representations (ICLR), 2023; % , which is a widely used weight-only PTQ toolkit; initial public release in January 2023; % incorporated into our speedup comparisons and discussion. 
-        \item AWQ~\cite{lin2024awq} (W3A16), accepted by Proceedings of Machine Learning and Systems (MLSys), 2024; 
-        \item OmniQuant~\cite{shao2023omniquant} (W2A16),  accepted by  12th International Conference on Learning Representations (ICLR), 2024; 
-        \item DB-LLM~\cite{chen2024dbllm} (W2A16), accepted by Findings of the Association for Computational Linguistics (ACL Findings), 2024; 
-        \item PB-LLM~\cite{shang2023pbllm} (W1A16), accepted by the 12th International Conference on Learning Representations (ICLR), 2024; 
-        \item BiLLM~\cite{huang2024billm} (W1A16), accepted by the 41st International Conference on Machine Learning (ICML), 2024; 
-        % \item ParetoQ~\cite{ParetoQ}, released by Meta, 2025; 
-        \item BitNet-b1.58~\cite{wang2023bitnet} (W1.5A8), the leading ultra lowbit weight quantization implementation with customized optimized kernels; paper published in February 2024 and pretrained weights released in April 2025. % incorporated into our discussion on differences and accuracy/efficiency comparisons. 
-    \end{itemize}
-We evaluate the perplexity performance on Wikitext2 and C4 datasets, and accuracy performance on CommonsenseQA benchmarks following commonly used evaluation pipelines. Also, we implement our kernel on LLM with 2B parameters to validate its speedup in end-to-end inference. 
-These experiments complement our original BERT results and demonstrate the applicability of our approach to modern LLM architectures. 
+    \input{utils/algorithms/algo1}
+    \lipsum[5][1-2] \added{The algorithm is shown in Algorithm~\ref{algo:reservoir}.}
 
-% \paragraph{Related works in ultra low-bit LLM.} Up to now, ultra low-bit quantization on activation for LLMs remains underexplored. As leading representative, BitNet-b1.58~\cite{wang2023bitnet} employs ternary weights with 8-bit integer activations, while PB-LLM~\cite{shang2023pbllm}, BiLLM~\cite{huang2024billm}, and DB-LLM~\cite{chen2024dbllm} partially uses binary/ternary weights in selected linear layers but do not quantize activations (leave them in FP16/BF16). In practice, jointly pushing both weights and activations to ultra-low bit-widths can noticeably hurt LLM performance; however, we find that selectively quantizing less-sensitive layers is feasible and yields favorable trade-offs. Our additional experiments in our revision is designed around this insight.
+    We have added the following changes into our revised manuscript:
+	\begin{changes}
+	
+		\lipsum[2][1-2] \cite{silva2023classifier,AnExperimentalInvestigation} \added{We have added the new results. \lipsum[2][3-5]. See Figure~\ref{fig:sample_figure1}.}
 
-\paragraph{Experiment Details on LLMs.} In practice, jointly pushing both weights and activations to ultra-low bit-widths can noticeably hurt LLM performance; however, we find that selectively quantizing less-sensitive layers is feasible and yields favorable trade-offs. Our additional experiments in our revision is designed around this insight. 
-We select {BitNet-b1.58-2B} ($\approx$2B parameters) as a strong ultra low-bit baseline, which uses ternary weight and 8-bit integer activation\footnote{https://huggingface.co/microsoft/bitnet-b1.58-2B-4T}. 
-Here are the detailed steps of our 1-bit training procedure: 
-\begin{enumerate}[label={Step \arabic* }, leftmargin=*]
-    \item {Layer selection}. We use a small calibration set to identify least-sensitive linear layers by their post-quantization MSE and select those with the smallest average error. 
-
-    \item {Module replacement.} We replace the selected layers with our BWTA modules (1-bit weight and ternary activation) based on the pretrained Bitnet model. 
-
-    \item {Train by Smooth Multi-Stage Quantization (SMSQ, our algorithm for stable training)}. We train these BWTA layers with a level-wise activation bit-width degradation schedule to ensure stable convergence under ultra-low bits. Concretely, we set the stages to $L=\{19,15,11,7,3\}$ with a linearly decreasing stride to gradually tighten activation bins while preserving training stability. Each stage uses only 1-2k steps with AdamW optimzier, use early-stop strategy for the beginning stages based on the evaluation loss. (Note that Bitnet uses 40k steps to train models of each size. Since we start from a low-bit quanized pretrained weights instead of an FP16 model, we shrink the training steps.) We warmup the training in the early 3\% steps, and the initial learning rate is 2e-4,  weight decay is set to 0. 
-
-    \item {System implementation by our custom BWTA CUDA kernel}. For inference, we implement the BWTA modules to our customized kernels, which is pre-compiled as a Cpython extension module and can be imported and executed from Python directly.
-    
-    \item {Speed and Quality evaluation.} We perform end-to-end timing in both prefill and decode phases under diverse workload settings (various batch sizes, context lengths, and generation lengths). Meanwhile, we evaluate perplexity on WikiText-2 and C4, and the model accuracy on CommonsenseQA benchmarks to measure the impact of ultra low-bit quantization on generation quality. 
-\end{enumerate}
-
-\input{tabs/accuracy_llm}
-\paragraph{Results of Generation Quality.} 
-We show the perplexity on WikiText-2 and C4 in Table~\ref{tab:accuracy-llm-ppl} and accuracy on commonsenseQA benchmarks in Table~\ref{tab:accuracy-llm-cmQA}. We compare our method with low-bit quantization methods, including RTN (round-to-nearest), AWQ~\cite{lin2024awq}, GPTQ~\cite{gptq}, OmniQuant~\cite{shao2023omniquant}, and  and the recent 1-bit LLM works, including DB-LLM~\cite{chen2024dbllm}, PB-LLM~\cite{shang2023pbllm}, BiLLM~\cite{huang2024billm} and Bitnet~\cite{wang2023bitnet}. 
-Results show that our BWTA achieves comparable perplexity and accuracy on both datasets, indicating negligible degradation in generation quality, even with lower average bitwidth and model sizes. 
-
-The results of end-to-end speedup can be found in the next Comment~\ref{com:llm-e2e-speed}. 
-
+		\input{utils/figures/figure1}
+		\newpage
+		\modified{\lipsum[3]} \added{The results are shown in Table~\ref{tab:table1}. }
+		\input{utils/tables/table1}
+		
+	\end{changes}
+	
 \end{revresponse}
 
-
 \begin{revcomment}
-End-to-end inference speedup results are missing.
-\label{com:llm-e2e-speed}
-% （端到端测速）
+The paper is not clear about the application of the proposed methods.
 \end{revcomment}
 \begin{revresponse}[]
-We thank the reviewer for pointing this out. 
-We include three mainstream quantization frameworks/toolkits with comparable model sizes: (1) Llama-3.2-3B implemented with \textit{bitsandbytes} (\textbf{4-bit}, QLoRA; NF4)\footnote{https://huggingface.co/docs/transformers/en/quantization/bitsandbytes\#qlora}, (2) Gemma-2B with BF16\footnote{https://huggingface.co/google/gemma-2b} and quantization via \textit{AutoGPTQ}\footnote{https://huggingface.co/Intel/gemma-2b-int4-inc} (\textbf{4-bit}, weight-only). (3) Bitnet-b1.58-2B with customized low-bit matmul kernel (int8$\times$int2 linear operator) provided by \textit{Microsoft}\footnote{https://github.com/microsoft/BitNet/tree/main/gpu}. 
+    Thank you for your constructive suggestions. \lipsum[6] \cite{tomsett2020rapid,liu2019large,qi2023text} The figure is shown in Figure~\ref{fig:sample_figure2}.
+    \input{utils/figures/figure2}
 
-Other works are excluded from end-to-end comparisons because of two major reasons: (i) they lack actual GPU-accelerated implementations, which prevents fair device-side timing, and/or (ii) pretrained weights are not publicly available, which fail in faithful decoding and accuracy evaluation. 
-
-\input{tabs/speed_prefill_benchmark}
-\input{tabs/speed_decode_benchmark}
-
-\paragraph{Results of Latency and Throughput.} 
-We report prefill and decode separately in Table~\ref{tab:prefill-bench} and Table~\ref{tab:decode-bench}. Time (s) in these tables denotes the phase-only latency (i.e., not prefill+decode combined). Results show that: 
-\begin{itemize}
-    \item \textbf{Prefill}. Table~\ref{tab:prefill-bench} present prefill latency (s) and throughput (tokens/s) across batch sizes \{1, 4, 8, 16\} at 2k context length. Relative to BitNet-b1.58-2B, BWTA further improves prefill throughput. The acceleration gains are especially clear at larger batch sizes: for batch=16, replacing 10\%/15\% of the parameters with BWTA yields approximately 216/330 tokens/s additional throughput, respectively. It shows an approximately linear speedup as more layers and parameters are replaced to BWTA. GPU memory usage is also reduced. Notably, the weight-only 4-bit methods (Llama-3.2-3B with bnb-4bit QLoRA and Gemma-2B with 4-bit AutoGPTQ) run out of memory at batch $\ge8$ and the prefill throughput is also much slower compared to Bitnet and ours. 
-    \item \textbf{Decode}. Table~\ref{tab:decode-bench} report generation time (s) and throughput (tokens/s) for generation lengths $\approx$50/100/150. Compared with W4A16 weight-only quantization, ultra-low-bit quantization provides a clear latency reduction in the decode phase. Moreover, BWTA achieves additional gains over BitNet-b1.58; when 15\% of layers are replaced with BWTA, we observe 12-15 tokens/s improvement in decoding throughput. 
-\end{itemize}
-
-These results show that BWTA can be easily inserted into modern LLMs, to benefit from ultra lowbit quantization and deliver further speedups in both prefill and decode, with minimal loss in generation quality. 
+    \lipsum[7] \cite{zhang2023deep,fu2022long} The algorithm is shown in Algorithm~\ref{algo:dsu}.
+    \input{utils/algorithms/algo2}
 
 \end{revresponse}
 
