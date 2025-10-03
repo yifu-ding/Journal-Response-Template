@@ -210,7 +210,7 @@ For the detailed response, please refer to Comment~\ref{com:rev1:Q1} for Reviewe
 
 Note: for environments like tables/algorithms, wrap them with
 
-```
+```latex
 \begin{addedenv}
 ...
 \end{addedenv}
