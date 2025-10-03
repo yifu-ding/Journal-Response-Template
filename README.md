@@ -12,6 +12,7 @@ latexmk -xelatex -synctex=1 -file-line-error -interaction=nonstopmode -outdir=bu
 
 ---
 ### 文件树
+
 ```shell
 .
 ├─ Responses/                   # 写回复
@@ -158,6 +159,22 @@ Response to the second reviewer
 
 > Changes
 
+6. label 跳转
+
+```latex
+\begin{revcomment}
+A summary of the practical domains where these methods have been applied, or could be applied, is missing.
+\label{com:rev1:Q1}
+\end{revcomment}
+```
+
+```latex
+For detailed response, please refer to the Comment~\ref{com:rev1:Q1} for Reviewer 1. 
+```
+
+![image-20251003150453120](./imgs/image-20251003150453120.png)
+> Label 跳转示例
+
 
 
 ### ⚠️ 关键自定义部分
@@ -198,7 +215,7 @@ Response to the second reviewer
 
 
 
-### 其他自定义部分
+### 配色与样式
 
 1. 配色自定义（[reviewresponse.sty#L26-39](reviewresponse.sty#L26-39)）
 
