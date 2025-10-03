@@ -215,3 +215,12 @@ Response to the second reviewer
 \definecolor{colorchangebg}{HTML}{f9daa6} % change box sidebar
 \definecolor{colorchangetext}{HTML}{000000}  % change text
 ```
+
+
+2. Comment卡片样式（如圆角阴影）。在 [reviewresponse.sty#L136](reviewresponse.sty#L136) 中修改 `revcomment` 的定义
+
+```latex
+\newenvironment{revcomment}[1][]{\refstepcounter{reviewcomment@counter}
+	\begin{tcolorbox}[adjusted title={Comment \arabic{reviewer@counter}.\arabic{reviewcomment@counter}}, fonttitle={\bfseries}, enhanced jigsaw, colbacktitle={colorcommentframe},arc=2pt, outer arc=2pt,opacityframe=0,boxrule=0em,colback={colorcommentbg},drop shadow={opacity=0.25},#1]
+}{\end{tcolorbox}}
+```
