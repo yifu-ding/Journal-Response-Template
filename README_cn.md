@@ -2,7 +2,6 @@
 
 期刊回复 Latex 模板。修改自[Journal-Response-Letter-Template-Latex](https://github.com/shellywhen/Journal-Response-Letter-Template-Latex)和[Latex Template for Review Comments of Papers](https://github.com/NeuroDong/Latex_for_review_comments)。感谢!
 
----
 ### 如何编译
 
 ```shell
@@ -12,7 +11,6 @@ latexmk -xelatex -synctex=1 -file-line-error -interaction=nonstopmode -outdir=bu
 
 编译后的 PDF 文件在 `./build/review_response.pdf` 中。
 
----
 
 ### 如何使用
 

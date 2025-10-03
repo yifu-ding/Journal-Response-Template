@@ -1,8 +1,9 @@
 # Journal Response LaTeX Template
 
+[中文](README_cn.md)
+
 A LaTeX template for journal response letters. Modified from [Journal-Response-Letter-Template-Latex](https://github.com/shellywhen/Journal-Response-Letter-Template-Latex) and [Latex Template for Review Comments of Papers](https://github.com/NeuroDong/Latex_for_review_comments). Thanks for the great groundwork.
 
----
 
 ### How to Compile
 
@@ -13,7 +14,6 @@ latexmk -xelatex -synctex=1 -file-line-error -interaction=nonstopmode -outdir=bu
 
 The compiled PDF is generated at `./build/review_response.pdf`.
 
----
 
 ### How to Use
 
