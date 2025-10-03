@@ -1,65 +1,71 @@
-# Journal Response Template Instructions
+# Journal Response LaTeX Template
 
-期刊回复 latex 模板简明引导。修改自[Journal-Response-Letter-Template-Latex](https://github.com/shellywhen/Journal-Response-Letter-Template-Latex)和[Latex Template for Review Comments of Papers](https://github.com/NeuroDong/Latex_for_review_comments)。Thanks!
+A LaTeX template for journal response letters. Modified from [Journal-Response-Letter-Template-Latex](https://github.com/shellywhen/Journal-Response-Letter-Template-Latex) and [Latex Template for Review Comments of Papers](https://github.com/NeuroDong/Latex_for_review_comments). Thanks for the great groundwork.
 
 ---
-### How to Compile 
+
+### How to Compile
 
 ```shell
 rm -rf build/
 latexmk -xelatex -synctex=1 -file-line-error -interaction=nonstopmode -outdir=build review_response.tex
 ```
 
+The compiled PDF is generated at `./build/review_response.pdf`.
+
 ---
-### 文件树
+
+### How to Use
+
+
+#### File Tree
 
 ```shell
 .
-├─ Responses/                   # 写回复
-│  ├─ AssociateEditor.tex       # 给副主编的回复
-│  ├─ Editor.tex                # 给主编的回复  
-│  ├─ R1.tex                    # 给审稿人 1 的回复 
-│  └─ R2.tex                    # 给审稿人 2 的回复 
-├─ utils/                       # 放一些插入内容
-│  ├─ algorithms/               # 插入算法
-│  │  ├─ algo1.tex             
-│  │  └─ algo2.tex              
-│  ├─ figures/                  # 插入图
-│  │  ├─ figure1.tex            
-│  │  └─ figure2.tex      
-│  ├─ imgs/                     # 图源文件
+├─ Responses/                   # Write responses here
+│  ├─ AssociateEditor.tex       # Response to the Associate Editor
+│  ├─ Editor.tex                # Response to the Editor
+│  ├─ R1.tex                    # Response to Reviewer 1
+│  └─ R2.tex                    # Response to Reviewer 2
+├─ utils/                       # Reusable inserts
+│  ├─ algorithms/               # Algorithm snippets
+│  │  ├─ algo1.tex
+│  │  └─ algo2.tex
+│  ├─ figures/                  # Figure snippets
+│  │  ├─ figure1.tex
+│  │  └─ figure2.tex
+│  ├─ imgs/                     # Image assets
 │  │  ├─ sample1.png
 │  │  └─ sample2.png
-│  └─ tables/                   # 插入表格
+│  └─ tables/                   # Table snippets
 │     ├─ table1.tex
 │     └─ table2.tex
-├─ compile.sh                   # 编译 latex 命令
-├─ cover_letter.tex             # 封面信
-├─ literature.bib               # 参考文献
-├─ review_response.tex          # 主文件
-└─ reviewresponse.sty           # 样式
+├─ compile.sh                   # Build script
+├─ cover_letter.tex             # Cover letter
+├─ literature.bib               # Bibliography
+├─ review_response.tex          # Main file
+└─ reviewresponse.sty           # Style file
 ```
 
----
 
-### ✍️封面基本信息修改
+#### ✍️ Cover Page - Basic Fields
 
-封面期刊信息、封面手稿编号 [review_response.tex#L9-10](./review_response.tex#L9-10)
+Journal info and manuscript ID on the cover page: [review_response.tex#L9-10](./review_response.tex#L9-10)
 
 ```latex
-\usepackage[journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
-			manuscript={TPAMI-yyyy-mm-idid},
-			editor={Mrs. Joyce Arnold}]{reviewresponse}
+\usepackage[journal={IEEE Transactions on XXX},
+            manuscript={TXXX-YYYY-MM-IDID},
+            editor={Mrs. Joyce Arnold}]{reviewresponse}
 ```
 
-脚注手稿编号 [review_response.tex#L115](./review_response.tex#L115)
+Manuscript ID in the footer: [review_response.tex#L115](./review_response.tex#L115)
 
 ```latex
-% 在 review_response.tex#L107
-\fancyfoot[L]{Response Letter for TPAMI-yyyy-mm-idid} 
+% around review_response.tex#L107
+\fancyfoot[L]{Response Letter for TXXX-YYYY-MM-IDID}
 ```
 
-标题与作者信息  [review_response.tex#L97-100](./review_response.tex#L97-100)
+Title and author info: [review_response.tex#L97-100](./review_response.tex#L97-100)
 
 ```latex
 \title{}
@@ -68,13 +74,13 @@ latexmk -xelatex -synctex=1 -file-line-error -interaction=nonstopmode -outdir=bu
 
 ![image-20251003133756427](./imgs/image-20251003133756427.png)
 
-> 封面示例
+> Cover example
 
+---
 
+#### ⚙️ Preset Commands
 
-### ⚙️ 预设命令
-
-1. 主编、副主编（如有）、审稿人
+1. Editor / Associate Editor (if any) / Reviewers
 
 ```latex
 \begin{document}
@@ -82,7 +88,7 @@ latexmk -xelatex -synctex=1 -file-line-error -interaction=nonstopmode -outdir=bu
 \editor
 Response to the editor
 
-\AssociateEditor % 如有副主编
+\AssociateEditor % if an associate editor is involved
 Response to the associate editor
 
 \reviewer
@@ -94,72 +100,77 @@ Response to the second reviewer
 
 ![image-20251003134014035](./imgs/image-20251003134014035.png)
 
-> 目录示例
-
+> TOC example
 
 2. General Comment
 
-概述一下主编、副主编或审稿人的 general comment
+Provide a high-level summary of the editor’s/associate editor’s/reviewer’s general comment:
 
 ```latex
 \begin{generalcomment}
-概述一下主编、副主编或审稿人的 general comment
+A brief summary of the editor’s/associate editor’s/reviewer’s general comment.
 \end{generalcomment}
 ```
 
+Your meta-level response:
+
 ```latex
 \begin{revmeta}[Optional Parameter]
-写我们对于 general comment 的回复
+Our response to the general comment.
 \end{revmeta}
 ```
 
 ![image-20251003134130787](./imgs/image-20251003134130787.png)
 
-> Summary Comment 示例
+> Summary Comment example
 
-3. 副主编的单条 comment
+3. Single comment from the Associate Editor
 
 ```latex
 \begin{revcommentToAssociateAuthor}
-复述一下副主编的意见
+Restate the associate editor’s comment.
 \end{revcommentToAssociateAuthor}
 ```
 
-也用`\begin{revmeta}[]` 回复
+Reply using `\begin{revmeta}[] ... \end{revmeta}`.
 
 ![image-20251003134207950](./imgs/image-20251003134207950.png)
 
-> 副主编的单条 Comment 示例
+> Single Comment example (Associate Editor)
 
-
-4. 审稿人的单条 comment（带编号）
+4. Single reviewer comment (numbered)
 
 ```latex
 \begin{revcomment}
-复述审稿人的意见
+Restate the reviewer’s comment.
 \end{revcomment}
 ```
 
 ```latex
 \begin{revresponse}[Optional Parameter]
-写我们的回复
+Our response.
 \end{revresponse}
 ```
 
 ![image-20251003144547508](./imgs/image-20251003144547508.png)
 
-> 审稿人的单条 Comment 示例
+> Single Comment example (Reviewer)
 
+5. Insert “Changes”
 
-5. 插入 Changes
+Wrap content with:
 
-用```\begin{changes} ... \end{changes}```包裹
+```
+\begin{changes}
+...
+\end{changes}
+```
 
 ![image-20251003134606251](./imgs/image-20251003134606251.png)
 
-> Changes
+> Changes example
 
-6. label 跳转
+6. Label cross-references
 
 ```latex
 \begin{revcomment}
@@ -169,23 +180,24 @@ A summary of the practical domains where these methods have been applied, or cou
 ```
 
 ```latex
-For detailed response, please refer to the Comment~\ref{com:rev1:Q1} for Reviewer 1. 
+For the detailed response, please refer to Comment~\ref{com:rev1:Q1} for Reviewer 1.
 ```
 
 ![image-20251003150453120](./imgs/image-20251003150453120.png)
-> Label 跳转示例
 
+> Label cross-reference example
 
+---
 
-### ⚠️ 关键自定义部分
+#### ⚠️ Key Customization Areas
 
-1. Cover Letter 在目录中显示为 **Cover Letter 或 Preface**（根据期刊要求），在 [cover_letter.tex#L4](cover_letter.tex#L4) 中定义
+1. Show the Cover Letter in the TOC as **Cover Letter** or **Preface** (as required by the journal), set in [cover_letter.tex#L4](cover_letter.tex#L4):
 
 ```latex
-\addcontentsline{toc}{section}{\protect\numberline{}Cover Letter}  % 显示为 Cover Letter
+\addcontentsline{toc}{section}{\protect\numberline{}Cover Letter}  % Display as “Cover Letter”
 ```
 
-2. 当前模板中 [cover_letter.tex#L34](cover_letter.tex#L34) 指出修改部分为**红字**标出，新加部分为**蓝字**标出（部分期刊要求 track changes）。需根据自己的 paper 修改这句话，并修改[reviewresponse.sty#L41-42](reviewresponse.sty#L41-42) 中的颜色定义
+2. The current template states at [cover_letter.tex#L34](cover_letter.tex#L34) that **modified text is marked in red** and **newly added text is marked in blue** (some journals require “track changes”). Update this sentence to match your paper, and adjust the colors in [reviewresponse.sty#L41-42](reviewresponse.sty#L41-42):
 
 ```latex
 \textbf{In the revised manuscript, modified parts are marked in red, and newly added parts are marked in blue.}
@@ -196,7 +208,15 @@ For detailed response, please refer to the Comment~\ref{com:rev1:Q1} for Reviewe
 \newcommand{\added}[1]{\textcolor{blue}{#1}}
 ```
 
-注意：table、algorithm 等环境外需要包裹``` \begin{addedenv} ... \end{addedenv} ``` 需要同步修改颜色 [reviewresponse.sty#L44-51](reviewresponse.sty#L44-51)
+Note: for environments like tables/algorithms, wrap them with
+
+```
+\begin{addedenv}
+...
+\end{addedenv}
+```
+
+and keep the color in sync, as defined in [reviewresponse.sty#L44-51](reviewresponse.sty#L44-51):
 
 ```latex
 \newenvironment{addedenv}{
@@ -211,33 +231,39 @@ For detailed response, please refer to the Comment~\ref{com:rev1:Q1} for Reviewe
 
 ![image-20251003141840217](./imgs/image-20251003141840217.png)
 
-> Track Changes 示例
+> Track Changes example
 
+---
 
+#### Color Palette and Styles
 
-### 配色与样式
-
-1. 配色自定义（[reviewresponse.sty#L26-39](reviewresponse.sty#L26-39)）
+1. Color customization ([reviewresponse.sty#L26-39](reviewresponse.sty#L26-39))
 
 ```latex
 % comment box color
-\definecolor{colorcommentbg}{HTML}{ededed}  % comment background
-\definecolor{colorcommentframe}{HTML}{8faadc}  % comment title background 
+\definecolor{colorcommentbg}{HTML}{ededed}   % comment background
+\definecolor{colorcommentframe}{HTML}{8faadc} % comment title background
 
-% response text color (including tables)
+% response text color
 \definecolor{maintext}{HTML}{000000}
 \definecolor{commenttext}{HTML}{23579A}
 
 %%%% change box color
-\definecolor{colorchangebg}{HTML}{f9daa6} % change box sidebar
+\definecolor{colorchangebg}{HTML}{f9daa6}    % change box sidebar
 \definecolor{colorchangetext}{HTML}{000000}  % change text
 ```
 
-
-2. Comment卡片样式（如圆角阴影）。在 [reviewresponse.sty#L136](reviewresponse.sty#L136) 中修改 `revcomment` 的定义
+2. Comment card styling (e.g., rounded corners, shadow). Edit the `revcomment` environment at [reviewresponse.sty#L136](reviewresponse.sty#L136):
 
 ```latex
 \newenvironment{revcomment}[1][]{\refstepcounter{reviewcomment@counter}
-	\begin{tcolorbox}[adjusted title={Comment \arabic{reviewer@counter}.\arabic{reviewcomment@counter}}, fonttitle={\bfseries}, enhanced jigsaw, colbacktitle={colorcommentframe},arc=2pt, outer arc=2pt,opacityframe=0,boxrule=0em,colback={colorcommentbg},drop shadow={opacity=0.25},#1]
+  \begin{tcolorbox}[adjusted title={Comment \arabic{reviewer@counter}.\arabic{reviewcomment@counter}},
+    fonttitle={\bfseries}, enhanced jigsaw, colbacktitle={colorcommentframe},
+    arc=2pt, outer arc=2pt, opacityframe=0, boxrule=0em, colback={colorcommentbg},
+    drop shadow={opacity=0.25}, #1]
 }{\end{tcolorbox}}
 ```
+
+![image-20251003154040973](./imgs/image-20251003154040973.png)
+
+> Comment Card example

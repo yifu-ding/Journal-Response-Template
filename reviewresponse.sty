@@ -135,9 +135,8 @@
 
 \newenvironment{revcomment}[1][]{\refstepcounter{reviewcomment@counter}
 	\begin{tcolorbox}[adjusted title={Comment \arabic{reviewer@counter}.\arabic{reviewcomment@counter}}, fonttitle={\bfseries}, enhanced jigsaw, colbacktitle={colorcommentframe},coltitle=white, 
-    coltext=commenttext, arc=2pt, outer arc=2pt,opacityframe=0,boxrule=0em,colback={colorcommentbg},drop shadow={opacity=0.25},#1]
+    coltext=commenttext, arc=2pt, outer arc=2pt, opacityframe=0,boxrule=0em,colback={colorcommentbg},drop shadow={opacity=0.25},#1]
 }{\end{tcolorbox}}
-
 
 \newenvironment{revresponse}[1][{Thank you for the comment.}]{%
 	\noindent\textbf{Response \arabic{reviewer@counter}.\arabic{reviewcomment@counter}:} \color{maintext}#1\par

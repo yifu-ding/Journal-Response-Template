@@ -1,0 +1,251 @@
+# 期刊审稿意见回复 Latex 模板
+
+期刊回复 Latex 模板。修改自[Journal-Response-Letter-Template-Latex](https://github.com/shellywhen/Journal-Response-Letter-Template-Latex)和[Latex Template for Review Comments of Papers](https://github.com/NeuroDong/Latex_for_review_comments)。感谢!
+
+---
+### 如何编译
+
+```shell
+rm -rf build/
+latexmk -xelatex -synctex=1 -file-line-error -interaction=nonstopmode -outdir=build review_response.tex
+```
+
+编译后的 PDF 文件在 `./build/review_response.pdf` 中。
+
+---
+
+### 如何使用
+
+#### 文件树
+
+```shell
+.
+├─ Responses/                   # 写回复
+│  ├─ AssociateEditor.tex       # 给副主编的回复
+│  ├─ Editor.tex                # 给主编的回复  
+│  ├─ R1.tex                    # 给审稿人 1 的回复 
+│  └─ R2.tex                    # 给审稿人 2 的回复 
+├─ utils/                       # 放一些插入内容
+│  ├─ algorithms/               # 插入算法
+│  │  ├─ algo1.tex             
+│  │  └─ algo2.tex              
+│  ├─ figures/                  # 插入图
+│  │  ├─ figure1.tex            
+│  │  └─ figure2.tex      
+│  ├─ imgs/                     # 图源文件
+│  │  ├─ sample1.png
+│  │  └─ sample2.png
+│  └─ tables/                   # 插入表格
+│     ├─ table1.tex
+│     └─ table2.tex
+├─ compile.sh                   # 编译 latex 命令
+├─ cover_letter.tex             # 封面信
+├─ literature.bib               # 参考文献
+├─ review_response.tex          # 主文件
+└─ reviewresponse.sty           # 样式
+```
+
+
+#### ✍️封面基本信息修改
+
+封面期刊信息、封面手稿编号 [review_response.tex#L9-10](./review_response.tex#L9-10)
+
+```latex
+\usepackage[journal={IEEE Transactions on XXX},
+			manuscript={TXXX-YYYY-MM-IDID},
+			editor={Mrs. Joyce Arnold}]{reviewresponse}
+```
+
+脚注手稿编号 [review_response.tex#L115](./review_response.tex#L115)
+
+```latex
+% 在 review_response.tex#L107
+\fancyfoot[L]{Response Letter for TXXX-YYYY-MM-IDID} 
+```
+
+标题与作者信息  [review_response.tex#L97-100](./review_response.tex#L97-100)
+
+```latex
+\title{}
+\author{}
+```
+
+![image-20251003133756427](./imgs/image-20251003133756427.png)
+
+> 封面示例
+
+
+
+#### ⚙️ 预设命令
+
+1. 主编、副主编（如有）、审稿人
+
+```latex
+\begin{document}
+...
+\editor
+Response to the editor
+
+\AssociateEditor % 如有副主编
+Response to the associate editor
+
+\reviewer
+Response to the first reviewer
+
+\reviewer
+Response to the second reviewer
+```
+
+![image-20251003134014035](./imgs/image-20251003134014035.png)
+
+> 目录示例
+
+
+2. General Comment
+
+概述一下主编、副主编或审稿人的 general comment
+
+```latex
+\begin{generalcomment}
+概述一下主编、副主编或审稿人的 general comment
+\end{generalcomment}
+```
+
+```latex
+\begin{revmeta}[Optional Parameter]
+写我们对于 general comment 的回复
+\end{revmeta}
+```
+
+![image-20251003134130787](./imgs/image-20251003134130787.png)
+
+> Summary Comment 示例
+
+3. 副主编的单条 comment
+
+```latex
+\begin{revcommentToAssociateAuthor}
+复述一下副主编的意见
+\end{revcommentToAssociateAuthor}
+```
+
+也用`\begin{revmeta}[]` 回复
+
+![image-20251003134207950](./imgs/image-20251003134207950.png)
+
+> 副主编的单条 Comment 示例
+
+
+4. 审稿人的单条 comment（带编号）
+
+```latex
+\begin{revcomment}
+复述审稿人的意见
+\end{revcomment}
+```
+
+```latex
+\begin{revresponse}[Optional Parameter]
+写我们的回复
+\end{revresponse}
+```
+
+![image-20251003144547508](./imgs/image-20251003144547508.png)
+
+> 审稿人的单条 Comment 示例
+
+
+5. 插入 Changes
+
+用```\begin{changes} ... \end{changes}```包裹
+
+![image-20251003134606251](./imgs/image-20251003134606251.png)
+
+> Changes
+
+6. label 跳转
+
+```latex
+\begin{revcomment}
+A summary of the practical domains where these methods have been applied, or could be applied, is missing.
+\label{com:rev1:Q1}
+\end{revcomment}
+```
+
+```latex
+For detailed response, please refer to the Comment~\ref{com:rev1:Q1} for Reviewer 1. 
+```
+
+![image-20251003150453120](./imgs/image-20251003150453120.png)
+> Label 跳转示例
+
+
+
+#### ⚠️ 关键自定义部分
+
+1. Cover Letter 在目录中显示为 **Cover Letter 或 Preface**（根据期刊要求），在 [cover_letter.tex#L4](cover_letter.tex#L4) 中定义
+
+```latex
+\addcontentsline{toc}{section}{\protect\numberline{}Cover Letter}  % 显示为 Cover Letter
+```
+
+2. 当前模板中 [cover_letter.tex#L34](cover_letter.tex#L34) 指出修改部分为**红字**标出，新加部分为**蓝字**标出（部分期刊要求 track changes）。需根据自己的 paper 修改这句话，并修改[reviewresponse.sty#L41-42](reviewresponse.sty#L41-42) 中的颜色定义
+
+```latex
+\textbf{In the revised manuscript, modified parts are marked in red, and newly added parts are marked in blue.}
+```
+
+```latex
+\newcommand{\modified}[1]{\textcolor{red}{#1}}
+\newcommand{\added}[1]{\textcolor{blue}{#1}}
+```
+
+注意：table、algorithm 等环境外需要包裹``` \begin{addedenv} ... \end{addedenv} ``` 需要同步修改颜色 [reviewresponse.sty#L44-51](reviewresponse.sty#L44-51)
+
+```latex
+\newenvironment{addedenv}{
+  \begingroup
+  \arrayrulecolor{blue}
+  \captionsetup{labelfont={color=blue}, textfont={color=blue}}%
+  \color{blue}%
+}{%
+  \endgroup
+}
+```
+
+![image-20251003141840217](./imgs/image-20251003141840217.png)
+
+> Track Changes 示例
+
+
+
+#### 配色与样式
+
+1. 配色自定义（[reviewresponse.sty#L26-39](reviewresponse.sty#L26-39)）
+
+```latex
+% comment box color
+\definecolor{colorcommentbg}{HTML}{ededed}  % comment background
+\definecolor{colorcommentframe}{HTML}{8faadc}  % comment title background 
+
+% response text color
+\definecolor{maintext}{HTML}{000000}
+\definecolor{commenttext}{HTML}{23579A}
+
+%%%% change box color
+\definecolor{colorchangebg}{HTML}{f9daa6} % change box sidebar
+\definecolor{colorchangetext}{HTML}{000000}  % change text
+```
+
+
+2. Comment卡片样式（如圆角阴影）。在 [reviewresponse.sty#L136](reviewresponse.sty#L136) 中修改 `revcomment` 的定义
+
+```latex
+\newenvironment{revcomment}[1][]{\refstepcounter{reviewcomment@counter}
+	\begin{tcolorbox}[adjusted title={Comment \arabic{reviewer@counter}.\arabic{reviewcomment@counter}}, fonttitle={\bfseries}, enhanced jigsaw, colbacktitle={colorcommentframe},arc=2pt, outer arc=2pt,opacityframe=0,boxrule=0em,colback={colorcommentbg},drop shadow={opacity=0.25},#1]
+}{\end{tcolorbox}}
+```
+
+![image-20251003154040973](/Users/yifuding/Library/Mobile Documents/com~apple~CloudDocs/pic/typora-saved-images/image-20251003154040973-9520474.png)
+
+> Comment卡片样式示例
